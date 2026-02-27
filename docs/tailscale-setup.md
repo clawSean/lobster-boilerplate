@@ -86,6 +86,35 @@ ssh user@100.x.x.x
 
 ---
 
+## Using with OpenClaw
+
+Once Tailscale is running on both machines, configure the OpenClaw Gateway to listen on the Tailscale interface instead of `0.0.0.0` (all interfaces):
+
+```bash
+openclaw config set gateway.bind tailnet
+openclaw gateway restart
+```
+
+This binds the Gateway **only** to the Tailscale IP — not the public interface, not loopback. Only devices on your tailnet can reach it.
+
+Make sure a Gateway auth token is set:
+
+```bash
+openclaw config get gateway.auth.token
+# If empty:
+openclaw config set gateway.auth.token "your-secret-token"
+```
+
+Node hosts on other tailnet machines connect using the VPS Tailscale IP:
+
+```bash
+openclaw node run --host <vps-tailscale-ip> --port 18789
+```
+
+> **Note:** With `bind: "tailnet"`, loopback (`127.0.0.1:18789`) no longer works. All connections go through the Tailscale IP — including local ones. This is fine for a dedicated VPS.
+
+---
+
 ## Key Facts
 
 - **No impact** on existing networking, ports, services, DNS, or SSH
