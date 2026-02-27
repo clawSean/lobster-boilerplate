@@ -83,45 +83,115 @@ ssh user@100.x.x.x
 | `tailscale up` | Connect / authenticate |
 | `tailscale down` | Disconnect (keeps installed) |
 | `tailscale logout` | Deauth this device from the tailnet |
+| `tailscale serve status` | Show active Tailscale Serve config |
 
 ---
 
 ## Using with OpenClaw
 
-Once Tailscale is running on both machines, configure the OpenClaw Gateway to listen on the Tailscale interface instead of `0.0.0.0` (all interfaces):
+### Why Tailscale Serve (not direct tailnet bind)
+
+OpenClaw supports two ways to expose the gateway on a tailnet:
+
+| Approach | Config | Protocol | Node host support |
+|----------|--------|----------|-------------------|
+| **Direct bind** | `gateway.bind: "tailnet"` | `ws://` (plaintext) | Broken — node hosts refuse plaintext ws:// to non-loopback addresses |
+| **Tailscale Serve** | `gateway.bind: "loopback"` + `tailscale.mode: "serve"` | `wss://` (TLS) | Works — Tailscale Serve provides HTTPS/WSS |
+
+> **Use Tailscale Serve.** Direct tailnet bind (`gateway.bind: "tailnet"`) causes `SECURITY ERROR: Cannot connect over plaintext ws://` when node hosts try to connect from other machines. Tailscale Serve keeps the gateway on loopback while providing WSS through Tailscale's HTTPS proxy.
+
+### Setup (VPS / gateway host)
+
+<!-- VARIES: Tailscale IP and MagicDNS hostname are unique to your tailnet -->
 
 ```bash
-# 1. Get your Tailscale IP
-tailscale ip -4
-# Example: 100.122.114.48
+# 1. Confirm Tailscale is connected
+tailscale status
 
-# 2. Set bind to tailnet
-openclaw config set gateway.bind tailnet
+# 2. Get your MagicDNS hostname (you'll need this later)
+tailscale status --json | python3 -c "import sys,json; print(json.load(sys.stdin)['Self']['DNSName'].rstrip('.'))"
+# Example: my-vps.tail12345.ts.net
 
-# 3. REQUIRED: Set allowed origins for the Control UI
-#    Without this, the Gateway will CRASH on restart for non-loopback binds.
-openclaw config set gateway.controlUi.allowedOrigins '["http://<YOUR_TAILSCALE_IP>:18789"]'
+# 3. Configure the gateway for Tailscale Serve
+openclaw config set gateway.bind loopback
+openclaw config set gateway.tailscale.mode serve
+openclaw config set gateway.auth.mode token
 
-# 4. Ensure auth token is set
+# 4. Set allowed origins for the Control UI (use your MagicDNS hostname)
+openclaw config set gateway.controlUi.allowedOrigins '["https://<YOUR_MAGICDNS_HOSTNAME>"]'
+
+# 5. Ensure an auth token exists
 openclaw config get gateway.auth.token
-# If empty:
-openclaw config set gateway.auth.token "your-secret-token"
+# If empty, set one:
+openclaw config set gateway.auth.token "$(openssl rand -hex 24)"
 
-# 5. NOW restart
+# 6. Restart
 openclaw gateway restart
 ```
 
-> ⚠️ **CRITICAL:** Steps 2 and 3 must BOTH be done before restarting. If you only set `gateway.bind: "tailnet"` without `controlUi.allowedOrigins`, the Gateway crashes immediately on startup and you lose access (including SSH-based agent sessions that depend on it). You'll need to manually edit `~/.openclaw/openclaw.json` to fix it.
-
-This binds the Gateway **only** to the Tailscale IP — not the public interface, not loopback. Only devices on your tailnet can reach it.
-
-Node hosts on other tailnet machines connect using the VPS Tailscale IP:
+### Verify Tailscale Serve
 
 ```bash
-openclaw node run --host <vps-tailscale-ip> --port 18789
+tailscale serve status
 ```
 
-> **Note:** With `bind: "tailnet"`, loopback (`127.0.0.1:18789`) no longer works. All connections go through the Tailscale IP — including local ones. This is fine for a dedicated VPS.
+Expected output:
+
+```
+https://<hostname>.ts.net (tailnet only)
+|-- / proxy http://127.0.0.1:18789
+```
+
+The gateway is now accessible at `https://<hostname>.ts.net` from any device on your tailnet. Traffic is encrypted by both WireGuard (Tailscale) and TLS (Serve).
+
+### Resulting `openclaw.json` gateway section
+
+<!-- VARIES: token, hostname, and tailscale domain are unique to your setup -->
+
+```json
+{
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "loopback",
+    "controlUi": {
+      "allowedOrigins": [
+        "https://my-vps.tail12345.ts.net"
+      ]
+    },
+    "auth": {
+      "mode": "token",
+      "token": "your-secret-token-here",
+      "allowTailscale": true
+    },
+    "trustedProxies": [
+      "127.0.0.1"
+    ],
+    "tailscale": {
+      "mode": "serve",
+      "resetOnExit": false
+    }
+  }
+}
+```
+
+### Connecting from other tailnet devices
+
+Devices on your tailnet reach the gateway via the MagicDNS hostname:
+
+- **Control UI:** `https://<hostname>.ts.net/`
+- **WebSocket:** `wss://<hostname>.ts.net` (port 443, TLS)
+- **Node hosts:** `openclaw node run --host <hostname>.ts.net --port 443 --tls`
+
+Loopback (`127.0.0.1:18789`) still works on the VPS itself.
+
+---
+
+## Tailscale Serve prerequisites
+
+- Tailscale CLI must be installed and logged in.
+- HTTPS must be enabled for your tailnet (Tailscale prompts if missing).
+- MagicDNS must be enabled (on by default for new tailnets).
 
 ---
 
@@ -133,3 +203,11 @@ openclaw node run --host <vps-tailscale-ip> --port 18789
 - **Free tier** — up to 100 devices, 3 users
 - **MagicDNS** — devices are reachable by hostname (e.g., `ssh my-vps`) if enabled in the Tailscale admin console
 - **Re-auth:** Some devices may need periodic re-authentication depending on your tailnet's key expiry policy. Check the admin console at [login.tailscale.com](https://login.tailscale.com).
+
+---
+
+## Docs
+
+- OpenClaw Tailscale docs: [docs.openclaw.ai/gateway/tailscale](https://docs.openclaw.ai/gateway/tailscale)
+- Tailscale Serve overview: [tailscale.com/kb/1312/serve](https://tailscale.com/kb/1312/serve)
+- `tailscale serve` command: [tailscale.com/kb/1242/tailscale-serve](https://tailscale.com/kb/1242/tailscale-serve)
