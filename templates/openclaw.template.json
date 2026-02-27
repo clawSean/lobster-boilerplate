@@ -139,7 +139,20 @@
     }
   },
   "messages": {
-    "ackReactionScope": "group-mentions"
+    "ackReactionScope": "group-mentions",
+    "inbound": {
+      "debounceMs": 0
+    },
+    "queue": {
+      "mode": "interrupt",
+      "debounceMs": 500,
+      "cap": 20,
+      "drop": "summarize",
+      "byChannel": {
+        "telegram": "interrupt",
+        "whatsapp": "interrupt"
+      }
+    }
   },
   "commands": {
     "native": "auto",
@@ -161,6 +174,10 @@
       "dmPolicy": "pairing",
       "botToken": "YOUR_TELEGRAM_BOT_TOKEN_HERE",
       "groups": {
+        "*": {
+          "systemPrompt": "In Telegram groups, interruptions are normal. If multiple messages arrive while you're answering, treat the earlier question and the follow-ups as one combined request and answer them together. Do not forget the original question when a new message arrives; re-work your answer using the full recent conversation.",
+          "requireMention": false
+        },
         "YOUR_GROUP_ID_HERE": {
           "requireMention": false,
           "enabled": true

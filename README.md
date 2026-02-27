@@ -13,6 +13,7 @@ The goal of this repo is to capture Sean/JPop's "good default" setup:
 
 ## Files
 
-- `templates/openclaw.template.json` – opinionated OpenClaw config with placeholders for your tokens/keys.
+- `templates/openclaw.template.json` – minimal, opinionated OpenClaw config with placeholders for your tokens/keys.
+- `templates/openclaw.full-example.json5` – **maximal** JSON5 reference config showing most documented keys with safe placeholder values.
 - `docs/SETUP.md` – step‑by‑step guide for bringing a new box online.
-- `scripts/diem.py` – optional helper to query Venice and print your Diem balance + rate-limit headers.
+- `skills/diem-balance/diem.py` (in your OpenClaw workspace) – optional helper to query Venice and print your Diem balance + rate-limit headers.

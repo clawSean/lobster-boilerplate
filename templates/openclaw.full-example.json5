@@ -1,0 +1,537 @@
+/**
+ * ~/.openclaw/openclaw.json.example
+ *
+ * This is a JSON5 EXAMPLE config intended as a reference for valid syntax and
+ * major config sections. It is NOT meant to be used verbatim.
+ *
+ * Rules:
+ * - File format is JSON5: comments + trailing commas are allowed.
+ * - Keys and structure here are taken from the official docs
+ *   (/usr/lib/node_modules/openclaw/docs/gateway/configuration.md).
+ * - Many fields are optional; you generally start from a minimal config and
+ *   add only what you need.
+ */
+
+{
+  // ---------------------------------------------------------------------------
+  // Environment + models
+  // ---------------------------------------------------------------------------
+  env: {
+    // Non‑overriding inline env vars (only applied if missing from process env)
+    OPENAI_API_KEY: "sk-...",
+    vars: {
+      GROQ_API_KEY: "gsk-...",
+      BRAVE_API_KEY: "brv_...",
+    },
+
+    // Optional shell env import (login shell; only for missing keys)
+    shellEnv: {
+      enabled: false,
+      timeoutMs: 15000,
+    },
+  },
+
+  models: {
+    providers: {
+      openai: {
+        apiKey: "${OPENAI_API_KEY}",
+      },
+      anthropic: {
+        apiKey: "${ANTHROPIC_API_KEY}",
+      },
+      "venice": {
+        apiKey: "${VENICE_API_KEY}",
+      },
+      // ... see docs/providers/*.md for full provider schemas
+    },
+  },
+
+  auth: {
+    // Non‑secret metadata for auth profiles (OAuth + API key)
+    profiles: {
+      "anthropic:personal": { provider: "anthropic", mode: "api_key" },
+      "openai:work": { provider: "openai", mode: "api_key", email: "me@example.com" },
+    },
+    order: {
+      anthropic: ["anthropic:personal"],
+      openai: ["openai:work"],
+    },
+  },
+
+  // ---------------------------------------------------------------------------
+  // Agent defaults (runtime behavior)
+  // ---------------------------------------------------------------------------
+  agents: {
+    defaults: {
+      // Workspace + repo
+      workspace: "~/.openclaw/workspace",
+      repoRoot: "~/Projects/openclaw",
+      skipBootstrap: false,
+      bootstrapMaxChars: 20000,
+      userTimezone: "UTC",
+      timeFormat: "auto", // auto | 12 | 24
+
+      // Model catalog + defaults
+      models: {
+        "openai/gpt-5.2": { alias: "gpt" },
+        "anthropic/claude-opus-4-5": { alias: "opus" },
+        "anthropic/claude-sonnet-4-5": { alias: "sonnet" },
+      },
+      model: {
+        primary: "openai/gpt-5.2",
+        fallbacks: ["anthropic/claude-sonnet-4-5"],
+      },
+      imageModel: {
+        primary: "openai/gpt-image-1",
+        fallbacks: [],
+      },
+
+      thinkingDefault: "low",  // off | low | high
+      verboseDefault: "off",   // off | on
+      elevatedDefault: "on",   // host tool access default
+      timeoutSeconds: 600,
+      mediaMaxMb: 5,
+
+      // Heartbeat + concurrency
+      heartbeat: {
+        every: "30m",
+        target: "last", // last | all
+      },
+      maxConcurrent: 3,
+
+      // Sub‑agents
+      subagents: {
+        model: "openai/gpt-4.1-mini",
+        maxConcurrent: 1,
+        archiveAfterMinutes: 60,
+      },
+
+      // Exec tools
+      exec: {
+        backgroundMs: 10000,
+        timeoutSec: 1800,
+        cleanupMs: 1800000,
+      },
+
+      // Context limits + pruning
+      contextTokens: 200000,
+      contextPruning: {
+        mode: "adaptive", // off | adaptive | aggressive
+        keepLastAssistants: 3,
+        softTrimRatio: 0.3,
+        hardClearRatio: 0.5,
+        minPrunableToolChars: 50000,
+        softTrim: { maxChars: 4000, headChars: 1500, tailChars: 1500 },
+        hardClear: { enabled: true, placeholder: "[Old tool result content cleared]" },
+        tools: {
+          deny: ["browser", "canvas"],
+        },
+      },
+
+      // Compaction + memory flush
+      compaction: {
+        mode: "default", // default | safeguard
+        reserveTokensFloor: 20000,
+        memoryFlush: {
+          enabled: true,
+          softThresholdTokens: 6000,
+          systemPrompt: "Session nearing compaction. Store durable memories now.",
+          prompt: "Write any lasting notes to memory/YYYY-MM-DD.md; reply with NO_REPLY if nothing to store.",
+        },
+      },
+
+      // Block streaming
+      blockStreamingDefault: "off", // on | off
+      blockStreamingBreak: "text_end", // text_end | message_end
+      blockStreamingChunk: { minChars: 800, maxChars: 1200 },
+      blockStreamingCoalesce: { idleMs: 1000 },
+      humanDelay: { minMs: 500, maxMs: 2000 },
+
+      // CLI backends (optional text‑only fallbacks)
+      cliBackends: {
+        "claude-cli": {
+          command: "claude",
+        },
+      },
+
+      // Sandbox defaults (overridable per‑agent)
+      sandbox: {
+        mode: "all",          // off | non-main | all
+        scope: "session",     // session | agent | shared
+        workspaceAccess: "rw", // none | ro | rw
+        workspaceRoot: "~/.openclaw/sandbox",
+      },
+    },
+
+    // -----------------------------------------------------------------------
+    // Per‑agent overrides
+    // -----------------------------------------------------------------------
+    list: [
+      {
+        id: "main",
+        default: true,
+        name: "Sean",
+        workspace: "~/.openclaw/workspace",
+        agentDir: "~/.openclaw/agents/main/agent",
+        model: {
+          primary: "openai/gpt-5.2",
+          fallbacks: ["anthropic/claude-opus-4-5"],
+        },
+        identity: {
+          name: "Sean",
+          theme: "lobster assistant",
+          emoji: "🦞",
+          avatar: "avatars/sean.png",
+        },
+        groupChat: {
+          mentionPatterns: ["@Sean", "@openclaw"],
+        },
+        sandbox: {
+          mode: "off",
+        },
+        tools: {
+          allow: ["read", "write", "edit", "exec", "browser", "nodes", "cron"],
+          deny: [],
+        },
+        subagents: {
+          allowAgents: ["*"]
+        },
+      },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // Multi‑agent routing
+  // ---------------------------------------------------------------------------
+  bindings: [
+    {
+      agentId: "main",
+      match: { channel: "telegram", accountId: "default" },
+    },
+  ],
+
+  tools: {
+    agentToAgent: {
+      enabled: false,
+      allow: ["main"],
+    },
+  },
+
+  // ---------------------------------------------------------------------------
+  // Gateway core
+  // ---------------------------------------------------------------------------
+  gateway: {
+    port: 18789,
+    auth: {
+      token: "${OPENCLAW_GATEWAY_TOKEN}",
+    },
+  },
+
+  logging: {
+    level: "info",
+    file: "/tmp/openclaw/openclaw.log",
+    consoleLevel: "info",
+    consoleStyle: "pretty", // pretty | compact | json
+    redactSensitive: "tools", // off | tools
+    redactPatterns: [
+      "\\bTOKEN\\b\\s*[=:]\\s*([\"']?)([^\\s\"']+)\\1",
+      "/\\bsk-[A-Za-z0-9_-]{8,}\\b/gi",
+    ],
+  },
+
+  // Web channel (used by WhatsApp Baileys)
+  web: {
+    enabled: true,
+    heartbeatSeconds: 60,
+    reconnect: {
+      initialMs: 2000,
+      maxMs: 120000,
+      factor: 1.4,
+      jitter: 0.2,
+      maxAttempts: 0,
+    },
+  },
+
+  // ---------------------------------------------------------------------------
+  // Messaging behavior (prefixes, queueing, TTS)
+  // ---------------------------------------------------------------------------
+  messages: {
+    responsePrefix: "🦞", // "" to disable, "auto" for [{identity.name}]
+    ackReaction: "👀",
+    ackReactionScope: "group-mentions", // group-mentions | group-all | direct | all
+    removeAckAfterReply: false,
+
+    queue: {
+      // Global interrupt: any new message in a conversation can cancel an in-flight run
+      // and start a fresh one with the full recent history.
+      mode: "interrupt", // steer | followup | collect | steer-backlog | interrupt
+      debounceMs: 500,    // small window to batch overlapping new messages
+      cap: 20,
+      drop: "summarize", // old | new | summarize
+      byChannel: {
+        telegram: "interrupt",
+        whatsapp: "interrupt",
+      },
+    },
+
+    inbound: {
+      // 0 = no "are you still typing?" delay; every message emits a turn immediately.
+      debounceMs: 0,
+      byChannel: {
+        // Example override:
+        // telegram: 0,
+      },
+    },
+
+    tts: {
+      auto: "off", // off | always | inbound | tagged
+      mode: "final", // final | all
+      provider: "openai", // openai | elevenlabs
+      summaryModel: "openai/gpt-4.1-mini",
+      modelOverrides: { enabled: true },
+      maxTextLength: 4000,
+      timeoutMs: 30000,
+      prefsPath: "~/.openclaw/settings/tts.json",
+      openai: {
+        apiKey: "${OPENAI_API_KEY}",
+        model: "gpt-4o-mini-tts",
+        voice: "alloy",
+      },
+      elevenlabs: {
+        apiKey: "${ELEVENLABS_API_KEY}",
+        baseUrl: "https://api.elevenlabs.io",
+        voiceId: "voice_id",
+        modelId: "eleven_multilingual_v2",
+        seed: 42,
+        applyTextNormalization: "auto",
+        languageCode: "en",
+        voiceSettings: {
+          stability: 0.5,
+          similarityBoost: 0.75,
+          style: 0.0,
+          useSpeakerBoost: true,
+          speed: 1.0,
+        },
+      },
+    },
+  },
+
+  // Talk mode defaults
+  talk: {
+    voiceId: "elevenlabs_voice_id",
+    voiceAliases: {
+      Clawd: "EXAVITQu4vr4xnSDxMaL",
+    },
+    modelId: "eleven_v3",
+    outputFormat: "mp3_44100_128",
+    apiKey: "${ELEVENLABS_API_KEY}",
+    interruptOnSpeech: true,
+  },
+
+  // ---------------------------------------------------------------------------
+  // Commands + access
+  // ---------------------------------------------------------------------------
+  commands: {
+    native: "auto",  // auto | true | false
+    text: true,
+    bash: false,
+    bashForegroundMs: 2000,
+    config: false,
+    debug: false,
+    restart: false,
+    useAccessGroups: true,
+  },
+
+  // ---------------------------------------------------------------------------
+  // Channels (Telegram + a few others as examples)
+  // ---------------------------------------------------------------------------
+  channels: {
+    telegram: {
+      enabled: true,
+      botToken: "${TELEGRAM_BOT_TOKEN}",
+      dmPolicy: "pairing", // pairing | allowlist | open | disabled
+      allowFrom: ["tg:6566057320"],
+      groups: {
+        "*": {
+          // Default behavior for all Telegram groups unless overridden by a specific ID key.
+          // Interruptions are expected: if multiple messages arrive while a reply is in flight,
+          // treat the earlier question + follow-ups as one combined request and answer them together.
+          systemPrompt: "In Telegram groups, interruptions are normal. If multiple messages arrive while you're answering, treat the earlier question and the follow-ups as one combined request and answer them together. Do not forget the original question when a new message arrives; re-work your answer using the full recent conversation.",
+          requireMention: true,
+        },
+      },
+      customCommands: [
+        { command: "backup", description: "Git backup" },
+      ],
+      historyLimit: 50,
+      replyToMode: "first", // off | first | all
+      linkPreview: true,
+      streamMode: "partial", // off | partial | block
+      draftChunk: {
+        minChars: 200,
+        maxChars: 800,
+        breakPreference: "paragraph",
+      },
+      actions: { reactions: true, sendMessage: true },
+      reactionNotifications: "own", // off | own | all
+      mediaMaxMb: 5,
+      retry: {
+        attempts: 3,
+        minDelayMs: 400,
+        maxDelayMs: 30000,
+        jitter: 0.1,
+      },
+      network: {
+        autoSelectFamily: false,
+      },
+    },
+
+    whatsapp: {
+      dmPolicy: "pairing", // pairing | allowlist | open | disabled
+      allowFrom: ["+15555550123"],
+      textChunkLimit: 4000,
+      chunkMode: "length", // length | newline
+      mediaMaxMb: 50,
+      sendReadReceipts: true,
+      groupPolicy: "allowlist",
+      groupAllowFrom: ["+15555550123"],
+    },
+
+    discord: {
+      enabled: false,
+      token: "${DISCORD_BOT_TOKEN}",
+      mediaMaxMb: 8,
+      allowBots: false,
+      actions: {
+        reactions: true,
+        stickers: true,
+        polls: true,
+        permissions: false,
+        messages: true,
+        threads: true,
+        pins: true,
+        search: true,
+        memberInfo: true,
+        roleInfo: true,
+        roles: false,
+        channelInfo: true,
+        voiceStatus: true,
+        events: true,
+        moderation: false,
+      },
+      replyToMode: "off",
+      dm: {
+        enabled: true,
+        policy: "pairing",
+        allowFrom: ["1234567890"],
+        groupEnabled: false,
+        groupChannels: ["openclaw-dm"],
+      },
+      guilds: {},
+      historyLimit: 20,
+      textChunkLimit: 2000,
+      chunkMode: "length",
+      maxLinesPerMessage: 17,
+      retry: {
+        attempts: 3,
+        minDelayMs: 500,
+        maxDelayMs: 30000,
+        jitter: 0.1,
+      },
+    },
+
+    slack: {
+      enabled: false,
+      botToken: "${SLACK_BOT_TOKEN}",
+      appToken: "${SLACK_APP_TOKEN}",
+      dm: {
+        enabled: true,
+        policy: "pairing",
+        allowFrom: ["U123"],
+        groupEnabled: false,
+        groupChannels: ["G123"],
+      },
+      channels: {},
+      historyLimit: 50,
+      allowBots: false,
+      reactionNotifications: "own",
+      reactionAllowlist: ["U123"],
+      replyToMode: "off",
+      thread: {
+        historyScope: "thread",
+        inheritParent: false,
+      },
+      actions: {
+        reactions: true,
+        messages: true,
+        pins: true,
+        memberInfo: true,
+        emojiList: true,
+      },
+      slashCommand: {
+        enabled: true,
+        name: "openclaw",
+        sessionPrefix: "slack:slash",
+        ephemeral: true,
+      },
+      textChunkLimit: 4000,
+      chunkMode: "length",
+      mediaMaxMb: 20,
+    },
+
+    signal: {
+      reactionNotifications: "own",
+      reactionAllowlist: ["+15551234567"],
+      historyLimit: 50,
+    },
+
+    imessage: {
+      enabled: false,
+      cliPath: "imsg",
+      dbPath: "~/Library/Messages/chat.db",
+      remoteHost: "user@gateway-host",
+      dmPolicy: "pairing",
+      allowFrom: ["+15555550123"],
+      historyLimit: 50,
+      includeAttachments: false,
+      mediaMaxMb: 16,
+      service: "auto",
+      region: "US",
+    },
+
+    googlechat: {
+      enabled: false,
+      serviceAccountFile: "/path/to/service-account.json",
+      audienceType: "app-url",
+      audience: "https://gateway.example.com/googlechat",
+      webhookPath: "/googlechat",
+      botUser: "users/1234567890",
+      dm: {
+        enabled: true,
+        policy: "pairing",
+        allowFrom: ["users/1234567890"],
+      },
+      groupPolicy: "allowlist",
+      groups: {},
+      actions: { reactions: true },
+      typingIndicator: "message",
+      mediaMaxMb: 20,
+    },
+  },
+
+  // ---------------------------------------------------------------------------
+  // Cron / automation placeholders (see docs/automation/*.md for details)
+  // ---------------------------------------------------------------------------
+  cron: {
+    // No required keys here; jobs are usually created via `openclaw cron` CLI.
+  },
+
+  // Wizard metadata (auto‑managed by onboarding/configure/doctor)
+  wizard: {
+    lastRunAt: "2026-01-01T00:00:00.000Z",
+    lastRunVersion: "2026.1.4",
+    lastRunCommit: "abc1234",
+    lastRunCommand: "configure",
+    lastRunMode: "local",
+  },
+}

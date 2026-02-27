@@ -160,7 +160,7 @@ This makes it explicit **who** the agent will treat as an authority inside group
 
 If you use **Venice** as a model provider and want a quick way to check your Diem balance and rate limits, you can use the included helper script:
 
-- `scripts/diem.py`
+- `~/.openclaw/workspace/skills/diem-balance/diem.py`
 
 It:
 
@@ -174,8 +174,7 @@ It:
 Usage:
 
 ```bash
-cd ~/.openclaw/workspace/boilplate
-python3 scripts/diem.py
+python3 ~/.openclaw/workspace/skills/diem-balance/diem.py
 ```
 
 You should see something like:
