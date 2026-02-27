@@ -91,19 +91,29 @@ ssh user@100.x.x.x
 Once Tailscale is running on both machines, configure the OpenClaw Gateway to listen on the Tailscale interface instead of `0.0.0.0` (all interfaces):
 
 ```bash
+# 1. Get your Tailscale IP
+tailscale ip -4
+# Example: 100.122.114.48
+
+# 2. Set bind to tailnet
 openclaw config set gateway.bind tailnet
-openclaw gateway restart
-```
 
-This binds the Gateway **only** to the Tailscale IP — not the public interface, not loopback. Only devices on your tailnet can reach it.
+# 3. REQUIRED: Set allowed origins for the Control UI
+#    Without this, the Gateway will CRASH on restart for non-loopback binds.
+openclaw config set gateway.controlUi.allowedOrigins '["http://<YOUR_TAILSCALE_IP>:18789"]'
 
-Make sure a Gateway auth token is set:
-
-```bash
+# 4. Ensure auth token is set
 openclaw config get gateway.auth.token
 # If empty:
 openclaw config set gateway.auth.token "your-secret-token"
+
+# 5. NOW restart
+openclaw gateway restart
 ```
+
+> ⚠️ **CRITICAL:** Steps 2 and 3 must BOTH be done before restarting. If you only set `gateway.bind: "tailnet"` without `controlUi.allowedOrigins`, the Gateway crashes immediately on startup and you lose access (including SSH-based agent sessions that depend on it). You'll need to manually edit `~/.openclaw/openclaw.json` to fix it.
+
+This binds the Gateway **only** to the Tailscale IP — not the public interface, not loopback. Only devices on your tailnet can reach it.
 
 Node hosts on other tailnet machines connect using the VPS Tailscale IP:
 
