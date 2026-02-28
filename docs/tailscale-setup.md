@@ -102,8 +102,6 @@ OpenClaw supports two ways to expose the gateway on a tailnet:
 
 ### Setup (VPS / gateway host)
 
-<!-- VARIES: Tailscale IP and MagicDNS hostname are unique to your tailnet -->
-
 ```bash
 # 1. Confirm Tailscale is connected
 tailscale status
@@ -120,12 +118,21 @@ openclaw config set gateway.auth.mode token
 # 4. Set allowed origins for the Control UI (use your MagicDNS hostname)
 openclaw config set gateway.controlUi.allowedOrigins '["https://<YOUR_MAGICDNS_HOSTNAME>"]'
 
-# 5. Ensure an auth token exists
+# 5. Set trustedProxies (REQUIRED for Tailscale Serve)
+openclaw config set gateway.trustedProxies '["127.0.0.1"]'
+
+# 6. Enable Tailscale auth (optional but recommended)
+openclaw config set gateway.auth.allowTailscale true
+
+# 7. Ensure an auth token exists
 openclaw config get gateway.auth.token
 # If empty, set one:
 openclaw config set gateway.auth.token "$(openssl rand -hex 24)"
 
-# 6. Restart
+# 8. (Optional) Pin browser tasks to a specific node
+openclaw config set gateway.nodes.browser.node "Your-Node-Display-Name"
+
+# 9. Restart
 openclaw gateway restart
 ```
 
@@ -145,8 +152,6 @@ https://<hostname>.ts.net (tailnet only)
 The gateway is now accessible at `https://<hostname>.ts.net` from any device on your tailnet. Traffic is encrypted by both WireGuard (Tailscale) and TLS (Serve).
 
 ### Resulting `openclaw.json` gateway section
-
-<!-- VARIES: token, hostname, and tailscale domain are unique to your setup -->
 
 ```json
 {
@@ -176,11 +181,16 @@ The gateway is now accessible at `https://<hostname>.ts.net` from any device on 
         "mode": "auto",
         "node": "Your-Local-Node-Name"
       }
-    
     }
   }
 }
 ```
+
+> **Critical settings explained:**
+> 
+> - **`trustedProxies: ["127.0.0.1"]`** — Required for Tailscale Serve. Without this, the Gateway rejects connections with "Proxy headers detected from untrusted address" and node hosts fail to connect.
+> - **`auth.allowTailscale: true`** — Allows Tailscale-authenticated connections without requiring the auth token (optional but useful for identity-aware access).
+> - **`nodes.browser.node`** — Pins browser relay tasks to a specific node by display name (e.g., "Jared WorkBook"). Ensures consistency when multiple nodes are paired.
 
 ### Connecting from other tailnet devices
 
@@ -218,4 +228,3 @@ Loopback (`127.0.0.1:18789`) still works on the VPS itself.
 - OpenClaw Tailscale docs: [docs.openclaw.ai/gateway/tailscale](https://docs.openclaw.ai/gateway/tailscale)
 - Tailscale Serve overview: [tailscale.com/kb/1312/serve](https://tailscale.com/kb/1312/serve)
 - `tailscale serve` command: [tailscale.com/kb/1242/tailscale-serve](https://tailscale.com/kb/1242/tailscale-serve)
-\n> **Pro Tip:** Setting "trustedProxies": ["127.0.0.1"] is required when using Tailscale Serve so the Gateway trusts the forwarded headers from the local proxy. Setting "node": "Your-Local-Node-Name" under gateway.nodes.browser ensures the agent always prioritizes your local machine for browser tasks.
