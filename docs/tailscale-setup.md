@@ -170,6 +170,13 @@ The gateway is now accessible at `https://<hostname>.ts.net` from any device on 
     "tailscale": {
       "mode": "serve",
       "resetOnExit": false
+    },
+    "nodes": {
+      "browser": {
+        "mode": "auto",
+        "node": "Your-Local-Node-Name"
+      }
+    
     }
   }
 }
@@ -211,3 +218,4 @@ Loopback (`127.0.0.1:18789`) still works on the VPS itself.
 - OpenClaw Tailscale docs: [docs.openclaw.ai/gateway/tailscale](https://docs.openclaw.ai/gateway/tailscale)
 - Tailscale Serve overview: [tailscale.com/kb/1312/serve](https://tailscale.com/kb/1312/serve)
 - `tailscale serve` command: [tailscale.com/kb/1242/tailscale-serve](https://tailscale.com/kb/1242/tailscale-serve)
+\n> **Pro Tip:** Setting "trustedProxies": ["127.0.0.1"] is required when using Tailscale Serve so the Gateway trusts the forwarded headers from the local proxy. Setting "node": "Your-Local-Node-Name" under gateway.nodes.browser ensures the agent always prioritizes your local machine for browser tasks.
