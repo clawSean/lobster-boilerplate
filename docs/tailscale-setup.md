@@ -1,5 +1,7 @@
 # Tailscale Setup Guide
 
+**Verified with: OpenClaw 2026.2.26**
+
 **Goal:** Create a private encrypted network (tailnet) between two or more machines. Zero impact on existing services, SSH, DNS, web hosting, or firewall rules.
 
 **What Tailscale does:** Installs a virtual network interface with a private `100.x.x.x` IP and creates an encrypted WireGuard tunnel between your devices. That's it — purely additive, touches nothing else.

@@ -1,5 +1,7 @@
 # OpenClaw Browser Relay (Chrome Extension) — Remote Gateway Setup
 
+**Verified with: OpenClaw 2026.2.26**
+
 **Last updated:** 2026-02-27
 
 **Goal:** Let the OpenClaw agent on a remote VPS control your existing, already-logged-in Chrome tabs on your local machine (laptop/desktop) via the Chrome extension + Tailscale.
