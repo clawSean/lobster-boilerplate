@@ -17,43 +17,41 @@ flowchart TD
     HB["⏱️ HEARTBEAT<br/>every 30 min"]
     DAILY[("📄 memory/daily/<br/>Raw logs")]
 
-    subgraph CUR["📥 CURATION · every 5 hours · Haiku"]
-        direction TB
-        Q1{"Person?"}
-        Q2{"Group?"}
-        Q3{"Lesson?"}
-        Q4{"Stable fact?"}
-        Q5{"Hot now?"}
-    end
+    CURLABEL["📥 CURATION · every 5 hours · Haiku<br/>Routes each item to the correct memory type"]
+
+    Q1{{"Person?"}}
+    Q2{{"Group?"}}
+    Q3{{"Lesson?"}}
+    Q4{{"Stable fact?"}}
+    Q5{{"Hot now?"}}
 
     E1["📔 by-contact/<br/>Relationships"]
     E2["📔 by-channel/<br/>Group dynamics"]
+    EM["📔 by-topic/ · ideas/<br/>Experiences"]
     S3["📚 knowledge/lessons/<br/>Learned rules"]
     S1["📚 knowledge/topics/<br/>How things work"]
     WM["💭 MEMORY.md<br/>~500 line cap<br/>Working memory"]
-    EM["📔 by-topic/ · ideas/<br/>Experiences"]
 
-    subgraph WEEKLY["📅 WEEKLY MAINTENANCE"]
-        direction TB
-        COMP["🗂️ COMPILE · Haiku<br/>Archive · Promote · Prune"]
-        DIST["💡 DISTILL · Sonnet<br/>Extract · Graduate · Patterns"]
-    end
+    WEEKLABEL["📅 WEEKLY MAINTENANCE"]
+    COMP["🗂️ COMPILE · Haiku<br/>Archive · Promote · Prune"]
+    DIST["💡 DISTILL · Sonnet<br/>Extract · Graduate · Patterns"]
 
     AUD["🔍 AUDIT · Monthly · Sonnet+<br/>Health · Skills · Security · Meta-review"]
 
-    subgraph PROC["⚙️ PROCEDURAL MEMORY — Identity & Rules"]
+    subgraph PROC["⚙️  PROCEDURAL — Identity & Rules"]
         direction LR
-        P1["SOUL.md"]
-        P2["AGENTS.md"]
-        P3["skills/NOTES.md"]
+        P1["📋 SOUL.md"]
+        P2["📋 AGENTS.md"]
+        P3["📋 skills/NOTES.md"]
     end
 
     %% Main flow
     CHAT -->|"always on"| HB
     HB -->|"appends"| DAILY
+    DAILY -->|"5h trigger"| CURLABEL
+    CURLABEL --> Q1
 
     %% Decision tree
-    DAILY -->|"5h trigger"| Q1
     Q1 -->|"yes"| E1
     Q1 -->|"no"| Q2
     Q2 -->|"yes"| E2
@@ -66,8 +64,9 @@ flowchart TD
     Q5 -->|"no"| EM
 
     %% Weekly
-    DAILY -->|"Sunday"| COMP
-    COMP --> DIST
+    DAILY -->|"Sunday"| WEEKLABEL
+    WEEKLABEL --> COMP
+    COMP -->|"then"| DIST
     DIST -->|"graduates"| S1
     DIST -->|"extracts"| S3
 
@@ -75,28 +74,35 @@ flowchart TD
     E1 & E2 & S1 & S3 & WM -->|"monthly"| AUD
     AUD -.->|"proposes updates"| PROC
 
-    %% Styles
+    %% ── STYLES ──────────────────────────────────────────────
+
     style CHAT fill:#c9a227,stroke:#1a1a2e,color:#000,font-weight:bold
     style HB fill:#1c3a52,stroke:#c9a227,color:#fff
     style DAILY fill:#2a2a2a,stroke:#888,color:#fff
 
-    style Q1 fill:#3d3200,stroke:#c9a227,color:#fff
-    style Q2 fill:#3d3200,stroke:#c9a227,color:#fff
-    style Q3 fill:#3d3200,stroke:#c9a227,color:#fff
-    style Q4 fill:#3d3200,stroke:#c9a227,color:#fff
-    style Q5 fill:#3d3200,stroke:#c9a227,color:#fff
+    style CURLABEL fill:#1a1f3a,stroke:#c9a227,color:#c9a227,font-weight:bold
+    style WEEKLABEL fill:#1a1f3a,stroke:#c9a227,color:#c9a227,font-weight:bold
+
+    style Q1 fill:#2e2800,stroke:#c9a227,color:#e8c84a,font-weight:bold
+    style Q2 fill:#2e2800,stroke:#c9a227,color:#e8c84a,font-weight:bold
+    style Q3 fill:#2e2800,stroke:#c9a227,color:#e8c84a,font-weight:bold
+    style Q4 fill:#2e2800,stroke:#c9a227,color:#e8c84a,font-weight:bold
+    style Q5 fill:#2e2800,stroke:#c9a227,color:#e8c84a,font-weight:bold
 
     style E1 fill:#5a3e2b,stroke:#c9a227,color:#fff
     style E2 fill:#5a3e2b,stroke:#c9a227,color:#fff
     style EM fill:#5a3e2b,stroke:#c9a227,color:#fff
+
     style S1 fill:#1e4d3a,stroke:#c9a227,color:#fff
     style S3 fill:#1e4d3a,stroke:#c9a227,color:#fff
+
     style WM fill:#4a1942,stroke:#c9a227,color:#fff,font-weight:bold
 
     style COMP fill:#1e5128,stroke:#c9a227,color:#fff
     style DIST fill:#1e5128,stroke:#c9a227,color:#fff
+
     style AUD fill:#5c2e2e,stroke:#c9a227,color:#fff
 
-    style P1 fill:#2d3a52,stroke:#c9a227,color:#fff
-    style P2 fill:#2d3a52,stroke:#c9a227,color:#fff
-    style P3 fill:#2d3a52,stroke:#c9a227,color:#fff
+    style P1 fill:#3a3d2b,stroke:#c9a227,color:#d4e89a
+    style P2 fill:#3a3d2b,stroke:#c9a227,color:#d4e89a
+    style P3 fill:#3a3d2b,stroke:#c9a227,color:#d4e89a
