@@ -1,57 +1,71 @@
-# 🦞 OpenClaw QMD Memory Setup Guide
+# 🦞 OpenClaw QMD Memory Setup Guide (QMD 2.x)
 
-This guide covers how to swap the default OpenClaw memory system for the **QMD backend**—a local-first search sidecar that combines BM25 (keyword) + Vector (semantic) search with local reranking.
+**Verified with:** OpenClaw `2026.3.8` + QMD `2.0.1` (updated 2026-03-12)
+
+This guide covers enabling OpenClaw memory with the **QMD backend** (`memory.backend = "qmd"`).
 
 ---
 
 ## 🏗️ Prerequisites
 
-### 1. Bun Runtime
-QMD is built on Bun.
-- **Linux/macOS:**
-  ```bash
-  curl -fsSL https://bun.sh/install | bash
-  ```
-- **Windows (WSL2 recommended):** See [bun.sh](https://bun.sh) for details.
+### 1) Bun runtime
 
-### 2. SQLite (with Extension Support)
-QMD needs a modern SQLite that allows loading extensions.
-- **Ubuntu/Debian:** `sudo apt install sqlite3`
-- **macOS:** `brew install sqlite` (The Homebrew version is preferred over the system-preinstalled one).
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
 
-### 3. Compiler Toolset
-Required for building `node-llama-cpp` (the local inference engine).
-- **Ubuntu/Debian:** `sudo apt install build-essential`
-- **macOS:** `xcode-select --install`
+### 2) SQLite + build tools
+
+- Ubuntu/Debian:
+
+```bash
+sudo apt update
+sudo apt install -y sqlite3 build-essential
+```
+
+- macOS:
+
+```bash
+brew install sqlite
+xcode-select --install
+```
 
 ---
 
-## 📦 Installation
+## 📦 Install / Upgrade QMD (use npm package, not GitHub URL)
 
-### 1. Install QMD CLI
-Install the latest version directly from GitHub via Bun:
+> Important: for QMD 2.x, install from npm package name.
+
 ```bash
-bun install -g https://github.com/tobi/qmd
+bun install -g @tobilu/qmd@latest
+qmd --version
 ```
 
-### 2. Make QMD Accessible
-The OpenClaw gateway service needs to find the `qmd` binary. Since Bun installs to your home directory, it’s best to create a system-wide symlink or wrapper.
+Expected: `qmd 2.x`
 
-**Linux Example:**
+If Bun reports blocked postinstall scripts, trust and run them:
+
 ```bash
-sudo ln -s $HOME/.bun/bin/bun /usr/local/bin/bun
-sudo ln -s $HOME/.bun/bin/qmd /usr/local/bin/qmd
+bun pm -g untrusted
+bun pm -g trust better-sqlite3
 ```
-
-**macOS Note:** If using Homebrew or a managed PATH, ensure `/usr/local/bin` is in the gateway's environment.
 
 ---
 
-## ⚙️ Configuration
+## 🔧 Ensure gateway can find `qmd`
 
-Update your `~/.openclaw/openclaw.json` to enable the backend. 
+QMD usually lands in `~/.bun/bin/qmd`. Make sure that location is on PATH for the OpenClaw gateway service, or symlink it:
 
-**Critical:** If you currently have `agents.defaults.memorySearch` settings, keep them—but add the top-level `"memory"` key shown below:
+```bash
+sudo ln -sf "$HOME/.bun/bin/bun" /usr/local/bin/bun
+sudo ln -sf "$HOME/.bun/bin/qmd" /usr/local/bin/qmd
+```
+
+---
+
+## ⚙️ OpenClaw config
+
+In `~/.openclaw/openclaw.json`, set (or keep) this shape:
 
 ```json
 {
@@ -64,7 +78,9 @@ Update your `~/.openclaw/openclaw.json` to enable the backend.
       "searchMode": "search",
       "update": {
         "interval": "5m",
-        "onBoot": true
+        "debounceMs": 15000,
+        "onBoot": true,
+        "waitForBootSync": false
       },
       "limits": {
         "maxResults": 6
@@ -76,46 +92,61 @@ Update your `~/.openclaw/openclaw.json` to enable the backend.
 
 ---
 
-## 🚀 First Run & Warm-up
+## 🚀 Warm-up (recommended)
 
-QMD downloads local GGUF models (~1GB+) on the first search/embed. To avoid timing out the OpenClaw gateway, run the initial sync manually in your terminal first.
+Use the same XDG dirs OpenClaw uses so QMD builds/warms the same index:
 
-1. **Initialize the collection:**
-   ```bash
-   qmd collection add memory-root ~/.openclaw/workspace
-   ```
+```bash
+STATE_DIR="${OPENCLAW_STATE_DIR:-$HOME/.openclaw}"
+export XDG_CONFIG_HOME="$STATE_DIR/agents/mainelobster/qmd/xdg-config"
+export XDG_CACHE_HOME="$STATE_DIR/agents/mainelobster/qmd/xdg-cache"
 
-2. **Run the initial update & embedding:**
-   ```bash
-   qmd update
-   qmd embed
-   ```
-   *Note: On a Mac mini (Apple Silicon), this will be very fast due to Metal acceleration. On a VPS without a GPU, this will run on the CPU and take longer.*
+qmd update
+qmd embed
+```
 
-3. **Restart OpenClaw Gateway:**
-   ```bash
-   openclaw gateway restart
-   ```
+Then restart gateway:
+
+```bash
+openclaw gateway restart
+```
 
 ---
 
-## 🔍 Verification
+## ✅ Verification
 
-Check if the gateway correctly armed the sidecar:
 ```bash
+qmd --version
 openclaw status
+openclaw memory search "test query"
 ```
-Look for: `Memory: ... plugin memory-core · vector ready (backend: qmd)`
 
-Try a search via the CLI to confirm it's hitting the new index:
-```bash
-openclaw memory search "your query"
-```
+What you want:
+- QMD shows `2.x`
+- OpenClaw status shows memory/vector ready
+- `openclaw memory search` returns results
 
 ---
 
-## 💡 Troubleshooting & Platform Tips
+## 🧯 Troubleshooting
 
-- **Mac Mini (M1/M2/M3):** You get native GPU acceleration via Metal. QMD will be significantly faster at reranking and vectorizing than on a standard VPS.
-- **Deep Freeze:** If the first search feels like it hung, check `qmd status`. It likely just needs more time to download the expansion and reranker models.
-- **Permissions:** If you see `EACCES` or `command not found` in the gateway logs, double-check your symlinks in `/usr/local/bin`.
+- **`Could not locate ... better_sqlite3.node`**
+  - Run:
+  ```bash
+  bun pm -g trust better-sqlite3
+  ```
+
+- **Vulkan build errors / fallback logs on Linux VPS**
+  - Usually harmless; QMD can run CPU-only.
+
+- **Very slow first query**
+  - Normal on first run: QMD downloads local models.
+
+- **Gateway restart warns token mismatch**
+  - Sync service token first:
+  ```bash
+  openclaw gateway install --force
+  ```
+
+- **Mac mini note**
+  - Apple Silicon uses Metal acceleration and is typically much faster than CPU-only VPS for embeddings/reranking.
