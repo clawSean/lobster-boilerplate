@@ -11,6 +11,7 @@ Skills live in your agent's `workspace/skills/` directory. OpenClaw discovers th
 | Skill | What It Does | Dependencies |
 |---|---|---|
 | [1password-secrets](./1password-secrets.md) | Runtime credential access via `op read` | 1Password CLI + service account |
+| [asana](./asana.md) | Project management via Asana MCP | mcp-remote, 1Password |
 | [coingecko](./coingecko.md) | Crypto price data and market info | None (free tier) or API key |
 | [coinmarketcap](./coinmarketcap.md) | CMC quotes, metadata, platform mapping | API key (1Password) |
 | [diem-balance](./diem-balance.md) | Check Venice AI Diem credits | Python3, Venice API key |
@@ -19,6 +20,7 @@ Skills live in your agent's `workspace/skills/` directory. OpenClaw discovers th
 | [search-twitter](./search-twitter.md) | Twitter/X API search and tweet fetching | API key (1Password) |
 | [service-health](./service-health.md) | Health checks across all external services | Varies by service |
 | [shrimp](./shrimp.md) | Spawn a sub-agent for background tasks | OpenClaw sub-agent support |
+| [slack](./slack.md) | Slack workspace access via MCP | slack-mcp-server, 1Password |
 | [telegram-pin](./telegram-pin.md) | Pin messages in Telegram groups | Bot token |
 
 ## Skill Structure
