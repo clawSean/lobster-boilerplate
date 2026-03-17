@@ -15,6 +15,7 @@ Skills live in your agent's `workspace/skills/` directory. OpenClaw discovers th
 | [coingecko](./coingecko.md) | Crypto price data and market info | None (free tier) or API key |
 | [coinmarketcap](./coinmarketcap.md) | CMC quotes, metadata, platform mapping | API key (1Password) |
 | [diem-balance](./diem-balance.md) | Check Venice AI Diem credits | Python3, Venice API key |
+| [knowledge-search](./knowledge-search.md) | Semantic search over knowledge/ via ChromaDB | Ollama, ChromaDB, Python3 |
 | [mermaid](./mermaid.md) | Render diagrams from code (flowcharts, sequences, etc.) | mermaid-cli (`mmdc`), Chromium |
 | [perplexity-search](./perplexity-search.md) | Deep web research with citations | API key (1Password) |
 | [search-twitter](./search-twitter.md) | Twitter/X API search and tweet fetching | API key (1Password) |
