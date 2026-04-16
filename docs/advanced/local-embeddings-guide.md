@@ -216,6 +216,276 @@ openclaw memory search "test query"
 
 The first search takes 10-20 seconds as it indexes all your memory files. After that, check status again -- you should see all files indexed with chunk counts.
 
+## Step 7: Know what "normal" looks like during rebuilds
+
+When OpenClaw rebuilds the builtin memory index, it may create temporary files like:
+
+```bash
+~/.openclaw/memory/main.sqlite.tmp-<random-id>
+~/.openclaw/memory/clawdia.sqlite.tmp-<random-id>
+```
+
+This is usually **normal**.
+OpenClaw appears to build the new SQLite index in a temp file first, then swap/finalize it into the real `*.sqlite` file once the rebuild succeeds.
+
+### Normal / healthy behavior
+- a `*.sqlite.tmp-*` file appears during indexing
+- the temp file grows while chunks are being embedded
+- a stable final file like `main.sqlite` or `clawdia.sqlite` exists afterward
+- `openclaw memory status` shows sane counts and `Vector: ready`
+
+### Concerning behavior
+- temp files repeatedly appear and disappear
+- no stable final `*.sqlite` file ever sticks around
+- the final sqlite stays empty or stale
+- searches keep returning weak or obviously wrong results after rebuild
+
+If you see the concerning pattern, use the built-in repair flow below before manually deleting files.
+
+## Troubleshooting: safest debugging path first
+
+If memory search seems broken, do these in order.
+
+### 1. Check status first
+
+```bash
+openclaw memory status
+```
+
+For a specific agent:
+
+```bash
+openclaw memory status --agent clawdia
+```
+
+This tells you:
+- the active provider and model
+- whether vector search is ready
+- file and chunk counts
+- whether the store looks dirty
+- which SQLite file is being used
+
+### 2. Try the built-in repair command before deleting anything
+
+```bash
+openclaw memory status --fix
+```
+
+For a specific agent:
+
+```bash
+openclaw memory status --fix --agent clawdia
+```
+
+This is the best first repair step for beginners.
+It can rewrite the store cleanly without you having to guess which files to delete.
+
+### 3. If debugging is messy, temporarily disable session indexing
+
+For troubleshooting only, simplify the corpus to file memory only:
+
+```json
+"memorySearch": {
+  "sources": ["memory"]
+}
+```
+
+instead of:
+
+```json
+"memorySearch": {
+  "sources": ["memory", "sessions"]
+}
+```
+
+Why this helps:
+- fewer files to index
+- easier to reason about file counts
+- easier to tell whether rebuilds are succeeding
+- easier to separate indexing problems from retrieval-quality problems
+
+Once things are stable, you can re-enable `sessions` if you want transcript recall.
+
+### 4. Old QMD files may still exist, and that can be confusing
+
+If you previously used QMD, you may still see old files on disk such as:
+
+```bash
+~/.openclaw/agents/<agent>/qmd/xdg-cache/qmd/index.sqlite
+```
+
+That does **not** automatically mean QMD is still active.
+Old QMD artifacts can stick around after switching to builtin memory search.
+
+To confirm the active backend, trust the live builtin status and SQLite metadata:
+
+```bash
+openclaw memory status --agent clawdia
+sqlite3 ~/.openclaw/memory/clawdia.sqlite "select key, value from meta order by key;"
+```
+
+If the sqlite metadata says `provider: ollama` and the status output agrees, builtin memory search is active even if old QMD files still exist elsewhere.
+
+### 5. Only delete the sqlite manually if repair did not help
+
+If `openclaw memory status --fix` fails or the store is obviously wedged, then a manual delete can be reasonable:
+
+```bash
+rm ~/.openclaw/memory/main.sqlite
+```
+
+or for a specific agent:
+
+```bash
+rm ~/.openclaw/memory/clawdia.sqlite
+```
+
+Then trigger a rebuild by running a search again.
+
+If you do this, it is smart to remove any matching temp files too:
+
+```bash
+rm ~/.openclaw/memory/clawdia.sqlite.tmp-*
+```
+
+Only do this when OpenClaw is not in the middle of a healthy rebuild you want to keep.
+
+## Quick confidence checklist
+
+If you want to be sure builtin memory search is really working, check all of these:
+
+- config points to the provider you expect
+- `openclaw memory status` reports the same provider/model
+- the final `~/.openclaw/memory/<agent>.sqlite` exists
+- the SQLite meta matches the provider/model you configured
+- a real `memory_search` query returns plausible results
+- if you want strict proof, set `fallback: "none"`
+
+## How to tell a real match from a red herring 🦞
+
+This is the part that trips up most beginners.
+A memory system can be **working technically** and still give you weak or misleading results.
+The goal is not just "did it return something?" The goal is: **did it return the right thing, and did it describe uncertainty honestly?**
+
+### Use three kinds of test queries
+
+#### 1. Positive control
+A query where you already know the answer exists.
+
+Example:
+- a specific preference you remember writing down
+- a project name that definitely appears in `MEMORY.md` or `memory/*.md`
+
+What you want:
+- the correct file appears
+- the returned snippet is obviously relevant
+- the answer sounds confident **for a good reason**
+
+#### 2. Negative control
+A query where you expect **no result**.
+
+Example:
+- a topic you never wrote down
+- a made-up phrase
+- a feature or preference you know is absent
+
+What you want:
+- `No match found`
+- or an honest answer like `Nothing relevant surfaced`
+
+What you do **not** want:
+- a random nearby memory dressed up as the answer
+
+#### 3. Near-miss / red-herring query
+A query that is semantically close to real memories, but still wrong.
+
+Example:
+- asking about "Telegram buttons" when the file really talks about Telegram formatting
+- asking about "git squashing" when the memory only mentions git repos generally
+
+What you want:
+- the system may surface a nearby file
+- but it should label it as **closest**, **related**, or **probably not it**
+
+That is healthy behavior.
+A good memory search system should be allowed to say:
+- `Closest hit is X, but it does not actually mention Y.`
+
+### Healthy answer patterns
+
+These are green flags:
+
+- `No match found.`
+- `Nothing directly relevant surfaced.`
+- `Closest hit is <file>, but it does not actually mention <topic>.`
+- `Related result, not a direct answer.`
+
+These phrases show the system is separating:
+- direct evidence
+- nearby semantic neighbors
+- genuine uncertainty
+
+### Warning signs / false-positive behavior
+
+These are red flags:
+
+- confidently citing an unrelated file as if it answered the question
+- turning a weak semantic neighbor into a claimed match
+- never saying `no match`
+- sounding certain when the source snippet is obviously off-topic
+
+If you see that pattern, your memory search may still be:
+- under-indexed
+- overly broad
+- mixing in noisy session history
+- or simply weak on retrieval quality for your chosen provider/model
+
+### A simple scoring rule for newbies
+
+When you test memory search, grade each query like this:
+
+- **Hit** — correct file, clearly relevant
+- **Near miss** — related file, but not really the answer
+- **Miss** — no useful result
+- **False positive** — wrong file presented as if it were correct
+
+If your system mostly gives:
+- **Hits** on positive controls
+- **Misses** on negative controls
+- **Near misses** honestly labeled on tricky queries
+
+...then it is behaving pretty well.
+
+If it gives lots of:
+- **False positives**
+
+...then it is not trustworthy yet, even if indexing technically works.
+
+### Best practice for agent prompts
+
+When you want better debugging behavior, explicitly tell the agent:
+
+```text
+Use memory_search. If there is no direct match, say so plainly. If the best result is only loosely related, label it as a closest hit or near miss, not as a confirmed answer.
+```
+
+That wording helps reduce bluffing and makes evaluation much easier.
+
+### Practical debugging tip
+
+If false positives are common, temporarily simplify the memory scope while debugging:
+
+```json
+"memorySearch": {
+  "sources": ["memory"]
+}
+```
+
+This reduces noise from session transcripts and makes it much easier to see whether the problem is:
+- indexing
+- retrieval quality
+- or agent interpretation
+
 ## Why nomic-embed-text?
 
 - 274 MB -- fits easily on a low-spec VPS
