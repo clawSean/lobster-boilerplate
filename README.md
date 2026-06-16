@@ -16,7 +16,8 @@ The goal of this repo is to capture Sean/JPop's "good default" setup:
 - `templates/openclaw.template.json` – minimal, opinionated OpenClaw config with placeholders for your tokens/keys.
 - `templates/openclaw.full-example.json5` – **maximal** JSON5 reference config showing most documented keys with safe placeholder values.
 - `docs/core/SETUP.md` – step‑by‑step guide for bringing a new box online.
-- `docs/core/1password-runtime-secrets.md` – runtime secret injection via 1Password (no secrets at rest).
+- `docs/core/1password-runtime-secrets.md` – default gateway secret handling, with a simple `.env` path and a 1Password runtime-injection path.
+- `docs/secrets-runtime.md` – separate `claw-doc` gateway example. Use this only when intentionally running an isolated second agent/gateway.
 - `docs/core/tailscale-setup.md` + `docs/core/openclaw-browser-relay.md` – secure browser relay setup.
 - `docs/advanced/` – optional deep-dives (local embeddings, qmd, MCP-specific integrations).
 - `skills/diem-balance/diem.py` (in your OpenClaw workspace) – optional helper to query Venice and print your Diem balance + rate-limit headers.

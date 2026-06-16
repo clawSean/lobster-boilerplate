@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Separate gateway example for the claw-doc service.
+# For the standard gateway, use infra/scripts/openclaw-env-from-1password and
+# wire it into openclaw-gateway.service.
+
 OUT_FILE="${1:-/run/openclaw-clawdoc/env}"
 OUT_DIR="$(dirname "$OUT_FILE")"
 

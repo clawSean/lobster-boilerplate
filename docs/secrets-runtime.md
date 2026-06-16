@@ -1,5 +1,14 @@
 # Secrets Runtime Architecture (claw-doc)
 
+> **Separate gateway example only.**
+>
+> This file documents a dedicated `claw-doc` gateway/agent. It is useful when
+> you intentionally run a second isolated OpenClaw instance with its own working
+> directory, service, port, bot token, and 1Password item.
+>
+> For first-time/default setup, use `docs/core/1password-runtime-secrets.md` and
+> wire secrets into `openclaw-gateway.service` instead.
+
 This pattern keeps secrets out of git and out of static systemd units.
 
 ## Layout
@@ -7,6 +16,10 @@ This pattern keeps secrets out of git and out of static systemd units.
 - `infra/systemd/openclaw-clawdoc.service`
 - `infra/scripts/render-env-from-1password.sh`
 - `infra/env/.env.template`
+
+These paths are intentionally `claw-doc`-specific. Replace the service name,
+working directory, runtime directory, port, and 1Password item refs when creating
+your own separate gateway.
 
 ## Flow
 
@@ -35,6 +48,8 @@ This pattern keeps secrets out of git and out of static systemd units.
 
 ## Notes
 
+- Do not install this service for the standard gateway.
+- The standard gateway service is `openclaw-gateway.service`.
 - Do not print env file contents in logs/screenshots.
 - If using multiple bots/accounts, add account-specific vars and map in `openclaw.json`.
 - Prefer least-privilege tokens for GitHub/Twilio/Telegram integrations.

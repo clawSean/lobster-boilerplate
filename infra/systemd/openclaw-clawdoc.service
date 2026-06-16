@@ -1,4 +1,7 @@
 [Unit]
+# Separate gateway example only.
+# Do not install this for the default OpenClaw gateway. For normal first-time
+# setup, wire secrets into openclaw-gateway.service instead.
 Description=OpenClaw claw-doc Gateway
 After=network-online.target
 Wants=network-online.target
