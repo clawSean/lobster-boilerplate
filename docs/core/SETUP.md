@@ -201,4 +201,17 @@ openclaw status
 
 Once the gateway is running and Telegram is configured, messages in your group should start hitting the agent.
 
+## 8. Keep a safe upgrade path
+
+Before your first package upgrade or planned gateway restart, read
+`docs/core/safe-upgrade-rollback.md` and run the preflight helper:
+
+```bash
+chmod +x infra/scripts/openclaw-*.sh
+infra/scripts/openclaw-restart-preflight.sh
+```
+
+The bundled wrappers create local restart backups, run `openclaw config
+validate`, and keep rollback commands explicit.
+
 This repo is intentionally simple – adjust the template + docs to your taste and commit your own defaults.
