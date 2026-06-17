@@ -68,7 +68,8 @@ create a second gateway unless you intentionally want a separate agent/profile.
   gateway: { auth: { mode: "token", token: "${OPENCLAW_GATEWAY_TOKEN}" } },
   channels: { telegram: { enabled: true, botToken: "${TELEGRAM_BOT_TOKEN}" } },
   models: { providers: { openai: { apiKey: "${OPENAI_API_KEY}" } } },
-  tools: { web_search: { providers: { brave: { apiKey: "${BRAVE_API_KEY}" } } } }
+  plugins: { entries: { brave: { config: { webSearch: { apiKey: "${BRAVE_API_KEY}" } } } } },
+  tools: { web: { search: { provider: "brave" } } }
 }
 ```
 

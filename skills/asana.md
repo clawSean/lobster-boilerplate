@@ -29,7 +29,7 @@ Project management via Asana's hosted MCP server, with OAuth credentials sourced
    #!/usr/bin/env bash
    export ASANA_CLIENT_ID="$(op read 'op://YourVault/Asana Cursor Token/Client ID')"
    export ASANA_CLIENT_SECRET="$(op read 'op://YourVault/Asana Cursor Token/Client Secret')"
-   exec npx -y @anthropic/mcp-remote@latest \
+   exec npx -y mcp-remote@latest \
      "https://mcp.asana.com/sse" \
      --header "asana-client-id: ${ASANA_CLIENT_ID}" \
      --header "asana-client-secret: ${ASANA_CLIENT_SECRET}" \

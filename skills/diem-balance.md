@@ -4,7 +4,7 @@ Check Venice AI Diem balance and remaining API credits.
 
 ## Setup
 
-1. **Requires Python 3** and the Venice API key in your environment or 1Password.
+1. **Requires Python 3** and a Venice API key. The script reads the key from your OpenClaw auth profiles (`~/.openclaw/agents/main/agent/auth-profiles.json`, the standard auth location).
 
 2. **Create the skill folder:**
    ```

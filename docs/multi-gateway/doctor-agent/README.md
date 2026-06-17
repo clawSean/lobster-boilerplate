@@ -59,8 +59,9 @@ Recommended example (from the original author):
 2. `ARCHITECTURE.md`
 3. `DEDICATED_GATEWAY.md`
 4. `DEPLOYMENT.md`
-5. `SANITIZATION.md` before publishing any derivative work
-6. Copy the templates and replace placeholders with your own values
+5. `SANITIZATION.md` — before publishing any derivative work
+6. `LESSONS_LEARNED.md` — hard-won operating notes
+7. Copy the templates and replace placeholders with your own values
 
 ## Relationship to the base pattern
 

@@ -4,7 +4,7 @@ Semantic search over your `workspace/knowledge/` directory using ChromaDB + Olla
 
 ## Prerequisites
 
-- **Ollama** running locally with `nomic-embed-text` model (see the [Local Embeddings Guide](../docs/local-embeddings-guide.md))
+- **Ollama** running locally with `nomic-embed-text` model (see the [Local Embeddings Guide](../docs/advanced/local-embeddings-guide.md))
 - **Python 3.10+** with `chromadb` and `ollama` packages
 
 ## Setup

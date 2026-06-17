@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastTouchedVersion": "2026.2.26"
+    "lastTouchedVersion": "2026.6.1"
   },
   "auth": {
     "profiles": {
@@ -12,8 +12,8 @@
         "provider": "venice",
         "mode": "api_key"
       },
-      "openai-codex:default": {
-        "provider": "openai-codex",
+      "openai:default": {
+        "provider": "openai",
         "mode": "oauth"
       }
     }
@@ -21,13 +21,13 @@
   "models": {
     "mode": "merge",
     "providers": {
-      "openai-codex": {
+      "openai": {
         "baseUrl": "https://api.openai.com/v1",
         "api": "openai-completions",
         "models": [
           {
-            "id": "gpt-5.1",
-            "name": "GPT-5.1",
+            "id": "gpt-5.5",
+            "name": "GPT-5.5",
             "reasoning": true,
             "input": ["text"],
             "cost": { "input": 0.00001, "output": 0.00003, "cacheRead": 0, "cacheWrite": 0 },
@@ -35,8 +35,8 @@
             "maxTokens": 8192
           },
           {
-            "id": "gpt-5.2",
-            "name": "GPT-5.2",
+            "id": "gpt-5.4-mini",
+            "name": "GPT-5.4 mini",
             "reasoning": true,
             "input": ["text"],
             "cost": { "input": 0.00001, "output": 0.00003, "cacheRead": 0, "cacheWrite": 0 },
@@ -103,11 +103,11 @@
   "agents": {
     "defaults": {
       "model": {
-        "primary": "openai-codex/gpt-5.2",
+        "primary": "openai/gpt-5.5",
         "fallbacks": [
-          "openai-codex/gpt-5.1",
-          "anthropic/claude-opus-4-5",
-          "anthropic/claude-sonnet-4-5",
+          "openai/gpt-5.4-mini",
+          "anthropic/claude-opus-4-8",
+          "anthropic/claude-sonnet-4-6",
           "anthropic/claude-haiku-4-5",
           "venice/kimi-k2-thinking",
           "venice/deepseek-v3.2",
@@ -122,7 +122,7 @@
         "maxConcurrent": 8,
         "model": {
           "primary": "anthropic/claude-haiku-4-5",
-          "fallbacks": ["anthropic/claude-sonnet-4-5"]
+          "fallbacks": ["anthropic/claude-sonnet-4-6"]
         }
       }
     }
@@ -131,7 +131,8 @@
     "web": {
       "search": {
         "enabled": true,
-        "apiKey": "YOUR_BRAVE_API_KEY_HERE"
+        "provider": "brave",
+        "maxResults": 5
       },
       "fetch": {
         "enabled": false
@@ -213,6 +214,17 @@
     "entries": {
       "telegram": {
         "enabled": true
+      },
+      "codex": {
+        "enabled": true
+      },
+      "brave": {
+        "config": {
+          "webSearch": {
+            "apiKey": "YOUR_BRAVE_API_KEY_HERE",
+            "mode": "web"
+          }
+        }
       }
     }
   }

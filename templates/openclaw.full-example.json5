@@ -73,16 +73,16 @@
 
       // Model catalog + defaults
       models: {
-        "openai/gpt-5.2": { alias: "gpt" },
-        "anthropic/claude-opus-4-5": { alias: "opus" },
-        "anthropic/claude-sonnet-4-5": { alias: "sonnet" },
+        "openai/gpt-5.5": { alias: "gpt" },
+        "anthropic/claude-opus-4-8": { alias: "opus" },
+        "anthropic/claude-sonnet-4-6": { alias: "sonnet" },
       },
       model: {
-        primary: "openai/gpt-5.2",
-        fallbacks: ["anthropic/claude-sonnet-4-5"],
+        primary: "openai/gpt-5.5",
+        fallbacks: ["anthropic/claude-sonnet-4-6"],
       },
       imageModel: {
-        primary: "openai/gpt-image-1",
+        primary: "openai/gpt-image-2",
         fallbacks: [],
       },
 
@@ -101,7 +101,7 @@
 
       // Sub‑agents
       subagents: {
-        model: "openai/gpt-4.1-mini",
+        model: "openai/gpt-5.4-mini",
         maxConcurrent: 1,
         archiveAfterMinutes: 60,
       },
@@ -174,8 +174,8 @@
         workspace: "~/.openclaw/workspace",
         agentDir: "~/.openclaw/agents/main/agent",
         model: {
-          primary: "openai/gpt-5.2",
-          fallbacks: ["anthropic/claude-opus-4-5"],
+          primary: "openai/gpt-5.5",
+          fallbacks: ["anthropic/claude-opus-4-8"],
         },
         identity: {
           name: "Sean",
@@ -287,7 +287,7 @@
       auto: "off", // off | always | inbound | tagged
       mode: "final", // final | all
       provider: "openai", // openai | elevenlabs
-      summaryModel: "openai/gpt-4.1-mini",
+      summaryModel: "openai/gpt-5.4-mini",
       modelOverrides: { enabled: true },
       maxTextLength: 4000,
       timeoutMs: 30000,
@@ -529,7 +529,7 @@
   // Wizard metadata (auto‑managed by onboarding/configure/doctor)
   wizard: {
     lastRunAt: "2026-01-01T00:00:00.000Z",
-    lastRunVersion: "2026.1.4",
+    lastRunVersion: "2026.6.1",
     lastRunCommit: "abc1234",
     lastRunCommand: "configure",
     lastRunMode: "local",

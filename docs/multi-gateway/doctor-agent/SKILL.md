@@ -91,12 +91,15 @@ This is not a hard dependency, but it materially improves:
 
 ## Read first
 
-1. `README.md`
-2. `OVERVIEW.md`
-3. `ARCHITECTURE.md`
-4. `DEDICATED_GATEWAY.md`
-5. `DEPLOYMENT.md`
-6. `SANITIZATION.md`
+Same order as the module `README.md`:
+
+1. `OVERVIEW.md`
+2. `ARCHITECTURE.md`
+3. `DEDICATED_GATEWAY.md`
+4. `DEPLOYMENT.md`
+5. `SANITIZATION.md` — before publishing any derivative work
+6. `LESSONS_LEARNED.md` — hard-won operating notes
+7. Copy the templates and replace placeholders with your own values
 
 ## Important publication rule
 

@@ -1,4 +1,4 @@
-# OpenClaw + Telegram bootstrap (boilplate)
+# OpenClaw + Telegram bootstrap (boilerplate)
 
 This is a **starting point** for bringing a fresh VPS online with an OpenClaw agent similar to Sean's setup.
 
@@ -56,27 +56,29 @@ cp templates/openclaw.template.json ~/.openclaw/openclaw.json
 
 Then edit `~/.openclaw/openclaw.json` and fill in:
 
-- `tools.web.search.apiKey` → your **Brave Search API key**.
+- `plugins.entries.brave.config.webSearch.apiKey` → your **Brave Search API key** (and keep `tools.web.search.provider: "brave"`).
 - `channels.telegram.botToken` → your **Telegram bot token** from **@BotFather**.
 - `channels.telegram.groups` → your group IDs and enable flags.
 - `gateway.auth.token` → any random secret string for local API auth.
 
 ### Why the Brave API key matters
 
-OpenClaw can **only search the web** if `tools.web.search.apiKey` is set.
+Web search runs through a **provider**. This template selects Brave via `tools.web.search.provider: "brave"` and stores the key under the brave plugin at `plugins.entries.brave.config.webSearch.apiKey`.
 
-- Without it, `/web_search` will be effectively disabled, and the agent will say it can’t search.
+- Without a configured provider/key, `/web_search` will be effectively disabled, and the agent will say it can’t search.
 - With it, the agent can:
   - look up live data (markets, docs, news)
   - fetch external docs when answering questions
 
-This repo expects a **Brave Search** key, but you can switch to another search provider if OpenClaw supports it in the future.
+This repo defaults to **Brave Search**, but Brave is just one of several providers OpenClaw supports (Tavily, Exa, DuckDuckGo, Perplexity, Grok); switch `tools.web.search.provider` and the matching plugin entry to use another.
+
+> Note: the legacy `tools.web.search.apiKey` path still loads through a compatibility shim, but `plugins.entries.brave.config.webSearch.apiKey` is the canonical location today.
 
 ### Why the OpenAI (and other model) keys matter for memory
 
 The **memory system relies on models that can call `memory_search` and read/write files**. In a typical setup:
 
-- The **primary chat model** (here `openai-codex/gpt-5.2`) is what you talk to.
+- The **primary chat model** (here `openai/gpt-5.5`) is what you talk to.
 - Sub‑agents (cron jobs, background tasks) often use a cheaper model (e.g. Haiku) to:
   - scan `memory/*.md`
   - update `MEMORY.md`
@@ -84,7 +86,7 @@ The **memory system relies on models that can call `memory_search` and read/writ
 
 Make sure you have working auth for:
 
-- `openai-codex` (for GPT‑5.1 / 5.2 style models)
+- `openai` (for GPT‑5.5 / 5.4‑mini style models — Codex OAuth is selected via the bundled `codex` plugin, enabled in the template)
 - `anthropic` (for Haiku/Sonnet/Opus, if you use them)
 - `venice` (for Kimi/DeepSeek, if configured)
 
@@ -198,6 +200,10 @@ If your Diem balance is depleted, you may see HTTP 402 errors or missing balance
 openclaw gateway start
 openclaw status
 ```
+
+> **`gateway.mode` must be set.** The gateway refuses to start unless `gateway.mode` is configured (this template sets `gateway.mode: "local"`). If you hand-build a config and omit it, the gateway will fail to start with a non-obvious error.
+
+> **CLI verbs:** `openclaw gateway start` runs the gateway in the foreground (handy for first-run testing); `openclaw gateway restart` reloads an already-running gateway after a config change; the systemd units in `infra/systemd/*` use `openclaw gateway run --port …` to run it as a managed background service. All are valid — pick `start` while testing and the systemd-managed `run` for a persistent install.
 
 Once the gateway is running and Telegram is configured, messages in your group should start hitting the agent.
 

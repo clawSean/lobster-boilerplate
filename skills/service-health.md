@@ -15,7 +15,6 @@ Quickly verify which external services are up, down, or degraded.
        ├── 1password.sh     # op whoami connectivity
        ├── twitter.sh       # Lightweight API call
        ├── perplexity.sh    # Minimal sonar query
-       ├── brave.sh         # Simple search query
        ├── coingecko.sh     # Ping endpoint
        └── qmd.sh           # Memory backend health
    ```
@@ -46,7 +45,6 @@ bash skills/service-health/checks/twitter.sh
 ✅ 1password     Authenticated
 ❌ twitter       401 Unauthorized
 ⚠️  perplexity   Slow response (3.2s)
-✅ brave         OK
 ✅ coingecko     OK
 ```
 
