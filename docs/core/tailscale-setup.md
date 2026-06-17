@@ -192,7 +192,7 @@ The gateway is now accessible at `https://<hostname>.ts.net` from any device on 
 > 
 > - **`trustedProxies: ["127.0.0.1"]`** — Required for Tailscale Serve. Without this, the Gateway rejects connections with "Proxy headers detected from untrusted address" and node hosts fail to connect.
 > - **`auth.allowTailscale: true`** — Allows Tailscale-authenticated connections without requiring the auth token (optional but useful for identity-aware access).
-> - **`nodes.browser.node`** — Pins browser relay tasks to a specific node by display name (e.g., "Jared WorkBook"). Ensures consistency when multiple nodes are paired.
+> - **`nodes.browser.node`** — Pins browser relay tasks to a specific node by display name (e.g., "My Laptop"). Ensures consistency when multiple nodes are paired.
 
 ### Connecting from other tailnet devices
 

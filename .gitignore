@@ -1,1 +1,15 @@
+# Logs
 *.log
+
+# Secrets and runtime config — never commit
+.env
+*.env
+!*.env.template
+openclaw.json
+openclaw.local.json
+auth-profiles.json
+/run/
+
+# OS / editor cruft
+.DS_Store
+*.swp

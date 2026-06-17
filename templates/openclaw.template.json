@@ -184,8 +184,8 @@
         }
       },
       "groupAllowFrom": [
-        6566057320,
-        438837189
+        1111111111,
+        2222222222
       ],
       "groupPolicy": "allowlist",
       "streamMode": "partial"

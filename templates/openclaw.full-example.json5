@@ -350,7 +350,7 @@
       enabled: true,
       botToken: "${TELEGRAM_BOT_TOKEN}",
       dmPolicy: "pairing", // pairing | allowlist | open | disabled
-      allowFrom: ["tg:6566057320"],
+      allowFrom: ["tg:1111111111"],
       groups: {
         "*": {
           // Default behavior for all Telegram groups unless overridden by a specific ID key.

@@ -98,8 +98,8 @@ Use the same XDG dirs OpenClaw uses so QMD builds/warms the same index:
 
 ```bash
 STATE_DIR="${OPENCLAW_STATE_DIR:-$HOME/.openclaw}"
-export XDG_CONFIG_HOME="$STATE_DIR/agents/mainelobster/qmd/xdg-config"
-export XDG_CACHE_HOME="$STATE_DIR/agents/mainelobster/qmd/xdg-cache"
+export XDG_CONFIG_HOME="$STATE_DIR/agents/main/qmd/xdg-config"
+export XDG_CACHE_HOME="$STATE_DIR/agents/main/qmd/xdg-cache"
 
 qmd update
 qmd embed
