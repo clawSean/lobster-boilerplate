@@ -2,6 +2,8 @@
 
 Search tweets, fetch timelines, and auto-expand tweet URLs via the Twitter/X API.
 
+> **Want the full kit?** This page is a *minimal, build-it-yourself* guide (direct API calls). For richer X/Twitter capabilities — public-account monitoring (Peeper), `x_search`, exact-tweet reads (`xurl`), and posting safety — use the maintained **[openclaw-x-twitter-kit](https://github.com/clawSean/openclaw-x-twitter-kit)** instead.
+
 ## Setup
 
 1. **Get Twitter API access** at [developer.x.com](https://developer.x.com/) and generate a Bearer Token.

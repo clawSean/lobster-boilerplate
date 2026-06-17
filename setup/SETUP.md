@@ -13,6 +13,32 @@ It goes a bit **beyond** the default OpenClaw onboarding by:
 
 ---
 
+## Prerequisites
+
+Have these ready before you start — it makes the rest of the walkthrough smooth.
+
+**Host**
+
+- A Linux host you control (VPS, Raspberry Pi, home server, cloud VM) or your own Linux/Mac box. A recent Ubuntu LTS / Debian-ish system is assumed below.
+- Rough sizing: **2 GB RAM minimum**, 4–8 GB comfortable (memory + local embeddings + a headless browser get hungry); ~2 cores; 20+ GB disk.
+- SSH access — and ideally [Tailscale](tailscale-setup.md) for safe remote reach (optional but recommended).
+
+**Accounts & keys** (grab the ones you need)
+
+- **Telegram bot token** — from [@BotFather](https://t.me/BotFather). *Required* for the Telegram path.
+- **A model provider with working auth** — OpenAI (Codex OAuth), Anthropic, and/or Venice. *Required* — this is the agent's brain.
+- **Brave Search API key** — *recommended*; without a search provider the agent is half-blind ([why](#why-the-brave-api-key-matters)).
+- **1Password** — optional but recommended, to keep secrets out of config; see [1password-runtime-secrets.md](1password-runtime-secrets.md).
+
+**Tooling** (installed during setup)
+
+- Node.js 22.x + `npm` (§1), then OpenClaw itself (§2).
+- Some *augments* need extras — e.g. Ollama + Python for [local embeddings](../augments/memory/local-embeddings-guide.md) / [knowledge-search](../augments/skills/knowledge-search.md). Not needed for the core path.
+
+> First time? You only strictly need a **host + Telegram bot token + one model provider** to get a talking agent. Everything else is additive.
+
+---
+
 ## 1. System + Node
 
 - Use a recent Ubuntu LTS.
@@ -28,7 +54,7 @@ sudo apt-get install -y nodejs
 
 ```bash
 npm install -g openclaw
-openclaw version
+openclaw --version
 ```
 
 ## 3. Prepare workspace

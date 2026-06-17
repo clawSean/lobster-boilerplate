@@ -2,6 +2,8 @@
 
 Semantic search over your `workspace/knowledge/` directory using ChromaDB + Ollama local embeddings. Separate from OpenClaw's built-in memorySearch (which covers `memory/` files via QMD) — this gives you vector search specifically over your knowledge base.
 
+> **Populating the knowledge base:** this skill *searches* `knowledge/` — it doesn't fill it. To *generate* researched notes into `knowledge/` (so there's something worth searching), see **Bottom Feeder** (clawSean), a depth-first knowledge-crawler, listed in the [Ecosystem & See-also](../../README.md#ecosystem--see-also) hub.
+
 ## Prerequisites
 
 - **Ollama** running locally with `nomic-embed-text` model (see the [Local Embeddings Guide](../memory/local-embeddings-guide.md))
