@@ -10,11 +10,12 @@ It's not just a copy-paste kit: it takes you from a fresh host — a VPS, a Rasp
 
 1. [Quickstart](#quickstart) — fresh host → running agent, in brief.
 2. [setup/SETUP.md](setup/SETUP.md) — the full step-by-step (read this one).
-3. [setup/workspace-layout.md](setup/workspace-layout.md) — which workspace files do what.
-4. [setup/1password-runtime-secrets.md](setup/1password-runtime-secrets.md) — how secrets are handled.
-5. [Multi-gateway setups](augments/multi-gateway/) — optional: a second isolated gateway (doctor/breakglass agent, sandbox).
-6. [troubleshooting/](troubleshooting/README.md) — `openclaw doctor`, verify-it-works, and common gotchas.
-7. [Ecosystem & See-also](#ecosystem--see-also) — where to go for more.
+3. [setup/security-hardening.md](setup/security-hardening.md) — trust boundaries first (do this alongside SETUP).
+4. [setup/workspace-layout.md](setup/workspace-layout.md) — which workspace files do what.
+5. [setup/1password-runtime-secrets.md](setup/1password-runtime-secrets.md) — how secrets are handled.
+6. [Multi-gateway setups](augments/multi-gateway/) — optional: a second isolated gateway (doctor/breakglass agent, sandbox).
+7. [troubleshooting/](troubleshooting/README.md) — `openclaw doctor`, verify-it-works, and common gotchas.
+8. [Ecosystem & See-also](#ecosystem--see-also) — where to go for more.
 
 ## Quickstart
 
@@ -41,7 +42,7 @@ openclaw status                        # gateway up? then DM your bot to confirm
 
 ## Files
 
-- **`setup/`** — the core path: `SETUP.md` (fresh host → running agent), `workspace-layout.md` (what each workspace file does), `1password-runtime-secrets.md` (secret handling: `.env` vs 1Password runtime injection), `tailscale-setup.md` (secure browser relay), and `config/` + `infra/` (below).
+- **`setup/`** — the core path: `SETUP.md` (fresh host → running agent), `security-hardening.md` (lock down trust boundaries first), `workspace-layout.md` (what each workspace file does), `1password-runtime-secrets.md` (secret handling: `.env` vs 1Password runtime injection), `tailscale-setup.md` (secure remote networking), and `config/` + `infra/` (below).
 - **`setup/config/openclaw.template.json`** — minimal, opinionated OpenClaw config with placeholders for your tokens/keys.
 - **`setup/config/openclaw.full-example.json5`** — maximal JSON5 reference showing most documented keys with safe placeholders.
 - **`setup/infra/`** — systemd units + 1Password env-render scripts for running the gateway(s) as persistent services.
