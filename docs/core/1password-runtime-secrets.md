@@ -4,8 +4,9 @@ This guide is for the default OpenClaw gateway. The canonical service name is
 `openclaw-gateway.service` (or `openclaw-gateway-<profile>.service` for a named
 profile).
 
-Do not install `openclaw-clawdoc.service` for a first-time/default setup. That
-file is a separate-gateway example for an isolated `claw-doc` agent.
+Do not install `openclaw-second-gateway.service` for a first-time/default setup.
+That file is a separate-gateway example for an isolated second gateway (see
+`docs/multi-gateway/`).
 
 ## Option A: simple `.env` fallback
 

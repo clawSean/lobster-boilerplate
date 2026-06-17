@@ -1,0 +1,72 @@
+{
+  // Public-safe example config for the doctor / breakglass agent.
+  //
+  // Originally authored by Nick Haener (@nicknmorty) as the `claw-doc` project;
+  // adapted here onto the lobster-boilerplate `second-gateway` base.
+  //
+  // This runs as a SECOND, isolated gateway — never the default one. The port,
+  // workspace, runtime root, bot token, and auth token are all distinct from the
+  // primary gateway. Replace every ${PLACEHOLDER} with your own value (or wire it
+  // from 1Password via render-second-gateway-env-from-1password.sh). Do NOT check
+  // in real secrets.
+  gateway: {
+    mode: "local",
+    bind: "loopback",
+    // 18890 keeps this gateway distinct from the default gateway (18789).
+    port: 18890,
+    auth: {
+      mode: "token",
+      token: "${OPENCLAW_GATEWAY_TOKEN}",
+    },
+  },
+  auth: {
+    profiles: {
+      "openai:default": {
+        provider: "openai",
+        mode: "api_key",
+      },
+    },
+  },
+  agents: {
+    defaults: {
+      // Dedicated workspace root for this gateway only.
+      workspace: "${WORKSPACE_ROOT}",
+      model: {
+        primary: "openai/gpt-5.4",
+      },
+    },
+    list: [
+      {
+        id: "doctor-agent",
+        name: "doctor-agent",
+        default: true,
+      },
+    ],
+  },
+  channels: {
+    telegram: {
+      enabled: true,
+      dmPolicy: "pairing",
+      groupPolicy: "disabled",
+      accounts: {
+        "doctor-agent": {
+          botToken: "${TELEGRAM_BOT_TOKEN}",
+          dmPolicy: "pairing",
+          groupPolicy: "disabled",
+        },
+      },
+      defaultAccount: "doctor-agent",
+    },
+  },
+  plugins: {
+    allow: ["telegram", "openai"],
+    entries: {
+      telegram: {
+        enabled: true,
+      },
+      openai: {
+        enabled: true,
+      },
+    },
+  },
+}
