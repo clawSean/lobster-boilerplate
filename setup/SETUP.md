@@ -39,6 +39,54 @@ Have these ready before you start — it makes the rest of the walkthrough smoot
 
 ---
 
+## Architecture — the shape of what you're building
+
+Before the steps, here's what you're standing up. One OpenClaw **Gateway** runs on your host — bound to localhost behind token auth — and you reach the **agent** through Telegram, while reaching the **box itself** privately over Tailscale/SSH. The agent works against your **workspace** (memory, knowledge, skills, config) and **tools**, calls out to your **model provider(s)**, pulls **secrets** from `.env`/1Password at runtime, and is kept alive by **systemd**.
+
+```mermaid
+flowchart TB
+    user(["👤 You"])
+
+    subgraph host["🖥️ Your host"]
+        direction TB
+        subgraph gw["🦞 OpenClaw Gateway"]
+            direction TB
+            sec["🔒 bound to localhost<br/>+ token auth"]
+            agent["Agent runtime<br/>(model-backed)"]
+            tools["Tools + Skills"]
+            ws[("Workspace<br/>memory · knowledge · skills · config")]
+        end
+        secrets[/"🔑 .env / 1Password<br/>runtime secret injection"/]
+        svc["⚙️ systemd<br/>persistent service"]
+    end
+
+    providers{{"☁️ Model providers<br/>Anthropic · OpenAI · Venice"}}
+
+    user <-->|"Telegram DM / commands"| agent
+    user -.->|"🔒 Tailscale / SSH"| host
+    sec -.-> agent
+    agent --> tools
+    agent <--> ws
+    agent -->|"outbound API calls"| providers
+    secrets -.->|"injected at runtime"| gw
+    svc -.->|"supervises"| gw
+
+    style gw fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    style host fill:#fafafa,stroke:#555
+    style sec fill:#fff8e1,stroke:#f57f17,stroke-dasharray:4 3
+    style agent fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    style ws fill:#e8f5e9,stroke:#2e7d32
+    style tools fill:#ede7f6,stroke:#4527a0
+    style secrets fill:#fce4ec,stroke:#ad1457
+    style svc fill:#eceff1,stroke:#455a64
+    style providers fill:#ede7f6,stroke:#4527a0
+    style user fill:#fffde7,stroke:#f9a825,stroke-width:2px
+```
+
+> This is the **core** shape. Everything in [augments/](../augments/) — extra channels, a second doctor/sandbox gateway, local embeddings — hangs off this same single gateway.
+
+---
+
 ## 1. System + Node
 
 - Use a recent Ubuntu LTS.
