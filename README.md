@@ -4,7 +4,7 @@
 
 It's not just a copy-paste kit: it takes you from a fresh VPS to a running agent on one readable path, explaining each config choice (and its failure mode) so you understand what you're building — then points you to the right sibling project for anything deeper.
 
-> Deliberately **light on code, heavy on config + docs**. The templates exist for convenience; the value is the guidance and the map.
+> Deliberately **light on code, heavy on config + docs**. The templates exist for convenience; the value is the guidance and the map. _(Design principles: [VISION.md](VISION.md).)_
 
 ## Start here
 
