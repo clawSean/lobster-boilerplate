@@ -529,7 +529,7 @@
   // Wizard metadata (auto‑managed by onboarding/configure/doctor)
   wizard: {
     lastRunAt: "2026-01-01T00:00:00.000Z",
-    lastRunVersion: "2026.6.1",
+    lastRunVersion: "2026.6.6",
     lastRunCommit: "abc1234",
     lastRunCommand: "configure",
     lastRunMode: "local",
