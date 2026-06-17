@@ -160,9 +160,9 @@ This makes it explicit **who** the agent will treat as an authority inside group
 
 ## 6. Optional: Venice Diem balance helper
 
-If you use **Venice** as a model provider and want a quick way to check your Diem balance and rate limits, you can use the included helper script:
+If you use **Venice** as a model provider and want a quick way to check your Diem balance and rate limits, the [`diem-balance` skill guide](../../skills/diem-balance.md) walks you through building a small helper script:
 
-- `~/.openclaw/workspace/skills/diem-balance/diem.py`
+- `~/.openclaw/workspace/skills/diem-balance/diem.py` (you create this by following the guide)
 
 It:
 

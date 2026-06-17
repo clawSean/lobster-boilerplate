@@ -1,8 +1,10 @@
 # 🦞 Lobster Skills
 
-Drop-in skill guides for OpenClaw agents. Each skill is a self-contained folder with a `SKILL.md` that tells the agent what it can do and how.
+A **starter set of skill _guides_** for OpenClaw agents. Each `.md` here walks you through building one skill — what it does, its dependencies, and how to wire it up. These are recipes, not drop-in folders: you create the actual `SKILL.md` (+ any scripts) in your workspace by following the guide.
 
-Skills live in your agent's `workspace/skills/` directory. OpenClaw discovers them automatically.
+> **Want ready-made skills instead?** Browse and install from **[SkillReef](https://github.com/clawSean/skillreef)** (the living registry) or **[ClawHub](https://clawhub.ai)** — `openclaw skills install <slug>`. This set is a curated starting point; SkillReef is the full catalogue (and where to publish your own).
+
+Skills live in your agent's `workspace/skills/` directory. OpenClaw discovers them automatically once a `SKILL.md` is in place.
 
 ---
 
@@ -24,9 +26,9 @@ Skills live in your agent's `workspace/skills/` directory. OpenClaw discovers th
 | [slack](./slack.md) | Slack workspace access via MCP | slack-mcp-server, 1Password |
 | [telegram-pin](./telegram-pin.md) | Pin messages in Telegram groups | Bot token |
 
-## Skill Structure
+## Skill structure (what you build)
 
-Each skill follows the same pattern:
+Following a guide, you create a skill folder in your workspace with this shape:
 
 ```
 skills/<name>/
@@ -47,9 +49,11 @@ description: >
 ---
 ```
 
-## Installing a Skill
+## Building a skill from a guide
 
-1. Copy the skill folder into `workspace/skills/`
-2. Ensure any dependencies are installed (see each skill's guide)
-3. If the skill needs API keys, add them to 1Password and update the `1password-secrets` skill table
-4. The agent will discover and use it automatically based on the description match
+1. Read the skill's guide (the `.md` files above) and create `workspace/skills/<name>/SKILL.md` from it
+2. Install any dependencies (each guide lists them)
+3. If it needs API keys, add them to 1Password and update the `1password-secrets` skill table
+4. The agent discovers and uses it automatically based on the description match
+
+> For skills that ship ready-to-run, install from [SkillReef](https://github.com/clawSean/skillreef) / [ClawHub](https://clawhub.ai) instead of building from scratch.
