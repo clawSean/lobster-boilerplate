@@ -2,7 +2,7 @@
 
 A **sandbox gateway** is a second, deliberately *locked-down* OpenClaw gateway you use to test things — a new bot, slash commands, a risky config — with no blast radius on your real agent. It's a specific application of the [second-gateway base pattern](second-gateway-base.md): same isolation (its own service, home, workspace, port, and bot token), but with tools and channels stripped to the bare minimum.
 
-> The sandbox-gateway pattern in this section was contributed by **Nick Haener** ([@nicknmorty](https://github.com/nicknmorty)) from his own locked-down sandbox setup.
+> The sandbox-gateway pattern in this section was contributed by **[@nicknmorty](https://github.com/nicknmorty)** from his own locked-down sandbox setup.
 
 ## When to use it
 

@@ -2,7 +2,7 @@
 
 > **Decide your trust boundaries first, then install OpenClaw inside them.** The dangerous default failure mode is accidentally creating a remote, natural-language control plane over your machine — an internet-connected command runner with secrets sprinkled everywhere. This is the order of operations to avoid that.
 >
-> Contributed by **Nick Haener** ([@nicknmorty](https://github.com/nicknmorty)).
+> Contributed by **[@nicknmorty](https://github.com/nicknmorty)**.
 
 Do these *before* and alongside the [SETUP](SETUP.md) steps — security is part of getting running, not an afterthought.
 

@@ -12,7 +12,7 @@ metadata:
 
 # doctor-agent
 
-> Originally authored by Nick Haener ([@nicknmorty](https://github.com/nicknmorty))
+> Originally authored by [@nicknmorty](https://github.com/nicknmorty)
 > as the `claw-doc` project. Migrated into lobster-boilerplate and adapted onto
 > the neutral `second-gateway` base. Original repository:
 > <https://github.com/nicknmorty/claw-doc>.

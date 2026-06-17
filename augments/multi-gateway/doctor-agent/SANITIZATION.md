@@ -1,6 +1,6 @@
 # Sanitization
 
-> Doctor / breakglass agent pattern originally authored by Nick Haener
+> Doctor / breakglass agent pattern originally authored by nicknmorty
 > ([@nicknmorty](https://github.com/nicknmorty)) as the `claw-doc` project —
 > migrated here and adapted onto the lobster-boilerplate `second-gateway` base.
 

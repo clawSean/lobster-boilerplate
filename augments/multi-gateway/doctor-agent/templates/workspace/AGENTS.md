@@ -1,7 +1,7 @@
 # AGENTS.md
 
 This workspace belongs to the **doctor agent**, a docs-first breakglass OpenClaw
-agent reference. (Pattern originally authored by Nick Haener,
+agent reference. (Pattern originally authored by nicknmorty,
 [@nicknmorty](https://github.com/nicknmorty), as `claw-doc`.)
 
 ## Mission

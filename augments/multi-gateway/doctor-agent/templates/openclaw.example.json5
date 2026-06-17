@@ -1,7 +1,7 @@
 {
   // Public-safe example config for the doctor / breakglass agent.
   //
-  // Originally authored by Nick Haener (@nicknmorty) as the `claw-doc` project;
+  // Originally authored by @nicknmorty as the `claw-doc` project;
   // adapted here onto the lobster-boilerplate `second-gateway` base.
   //
   // This runs as a SECOND, isolated gateway — never the default one. The port,

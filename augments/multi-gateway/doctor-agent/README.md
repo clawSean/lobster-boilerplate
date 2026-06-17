@@ -7,7 +7,7 @@ primary source of truth, support breakglass workflows during incidents, and stay
 isolated from your everyday personal-assistant runtime state.
 
 > **Credit.** The doctor / breakglass agent pattern in this section was
-> originally authored by **Nick Haener** ([@nicknmorty](https://github.com/nicknmorty))
+> originally authored by **[@nicknmorty](https://github.com/nicknmorty)**
 > as the `claw-doc` project. It has been migrated here and adapted to fit
 > lobster-boilerplate's neutral `second-gateway` base. Original repository:
 > <https://github.com/nicknmorty/claw-doc>.

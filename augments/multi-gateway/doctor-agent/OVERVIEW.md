@@ -1,6 +1,6 @@
 # Overview
 
-> Doctor / breakglass agent pattern originally authored by Nick Haener
+> Doctor / breakglass agent pattern originally authored by nicknmorty
 > ([@nicknmorty](https://github.com/nicknmorty)) — adapted here onto the
 > lobster-boilerplate `second-gateway` base.
 

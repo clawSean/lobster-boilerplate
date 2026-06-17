@@ -192,7 +192,7 @@ If you use **Venice** as a model provider and want a quick way to check your Die
 
 - `~/.openclaw/workspace/skills/diem-balance/diem.py` (you create this by following the guide)
 
-> For usage + cost reporting across **all** providers (not just Venice Diem), see Nick Haener's [OpenClaw Usage Meter](https://github.com/nicknmorty/openclaw-usage-meter).
+> For usage + cost reporting across **all** providers (not just Venice Diem), see nicknmorty's [OpenClaw Usage Meter](https://github.com/nicknmorty/openclaw-usage-meter).
 
 It:
 
