@@ -58,4 +58,5 @@ lobster-boilerplate is a map as much as a kit. For anything beyond the core path
 - **Bottom Feeder** (clawSean) — depth-first knowledge-crawler skill; it *populates* the `knowledge/` base your `knowledge-search` skill reads.
 - **[Crustacean Cognition](https://github.com/clawSean/crustacean-cognition)** — the current advanced memory architecture (4C pipeline). Use this for serious memory work.
 - **[openclaw-x-twitter-kit](https://github.com/clawSean/openclaw-x-twitter-kit)** — deeper X/Twitter capabilities than the bundled `search-twitter` guide.
+- **[OpenClaw Usage Meter](https://github.com/nicknmorty/openclaw-usage-meter)** (Nick Haener) — usage + cost reporting for your agent sessions. Know what you're spending.
 - **[docs.openclaw.ai](https://docs.openclaw.ai)** — canonical upstream reference for config keys, the `openclaw doctor` CLI, channels, and plugins. When in doubt, defer here.
