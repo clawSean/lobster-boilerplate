@@ -91,7 +91,7 @@ Contains:
 ## Suggested components
 
 - dedicated gateway service, separate from the main/personal assistant gateway
-  (see `infra/systemd/openclaw-second-gateway.service`)
+  (see `setup/infra/systemd/openclaw-second-gateway.service`)
 - dedicated bot token: `${TELEGRAM_BOT_TOKEN}`
 - dedicated gateway auth token: `${OPENCLAW_GATEWAY_TOKEN}`
 - dedicated workspace root such as `/path/to/doctor-agent/workspace`

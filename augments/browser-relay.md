@@ -34,8 +34,8 @@ Five pieces:
 
 ## Prerequisites
 
-- Tailscale installed and connected on both machines (see [tailscale-setup.md](tailscale-setup.md))
-- Gateway configured with Tailscale Serve (see [tailscale-setup.md](tailscale-setup.md))
+- Tailscale installed and connected on both machines (see [tailscale-setup.md](../setup/tailscale-setup.md))
+- Gateway configured with Tailscale Serve (see [tailscale-setup.md](../setup/tailscale-setup.md))
 - OpenClaw installed on both machines
 - **Same OpenClaw version on both machines** (version mismatch causes `device signature invalid` errors)
 
@@ -296,7 +296,7 @@ openclaw gateway restart
 ### `SECURITY ERROR: Cannot connect over plaintext ws://`
 
 **Cause:** Gateway is using `bind: "tailnet"` (direct bind) instead of Tailscale Serve.
-**Fix:** Set `gateway.bind: "loopback"` and `gateway.tailscale.mode: "serve"`. See [tailscale-setup.md](tailscale-setup.md).
+**Fix:** Set `gateway.bind: "loopback"` and `gateway.tailscale.mode: "serve"`. See [tailscale-setup.md](../setup/tailscale-setup.md).
 
 ### `pairing required`
 

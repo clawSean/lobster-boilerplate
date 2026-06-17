@@ -22,7 +22,7 @@ Your agent's **workspace** (`~/.openclaw/workspace/` by default) is where its id
 |-----------|---------------|
 | `memory/` | Episodic memory — daily logs, per-contact/group notes, lessons, reminders (what *happened*). |
 | `knowledge/` | Semantic memory — durable topics, research, procedures (what's *true*). |
-| `skills/` | Skill folders, each with a `SKILL.md`. See the [skill guides](../../skills/README.md) and [SkillReef](https://github.com/clawSean/skillreef) for ready-made ones. |
+| `skills/` | Skill folders, each with a `SKILL.md`. See the [skill guides](../augments/skills/README.md) and [SkillReef](https://github.com/clawSean/skillreef) for ready-made ones. |
 | `projects/` | Work-in-progress code, scratch, and sandboxes. |
 
 ## How OpenClaw loads it

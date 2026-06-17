@@ -51,7 +51,7 @@ Copy the template into place:
 
 ```bash
 mkdir -p ~/.openclaw
-cp templates/openclaw.template.json ~/.openclaw/openclaw.json
+cp setup/config/openclaw.template.json ~/.openclaw/openclaw.json
 ```
 
 Then edit `~/.openclaw/openclaw.json` and fill in:
@@ -160,7 +160,7 @@ This makes it explicit **who** the agent will treat as an authority inside group
 
 ## 6. Optional: Venice Diem balance helper
 
-If you use **Venice** as a model provider and want a quick way to check your Diem balance and rate limits, the [`diem-balance` skill guide](../../skills/diem-balance.md) walks you through building a small helper script:
+If you use **Venice** as a model provider and want a quick way to check your Diem balance and rate limits, the [`diem-balance` skill guide](../augments/skills/diem-balance.md) walks you through building a small helper script:
 
 - `~/.openclaw/workspace/skills/diem-balance/diem.py` (you create this by following the guide)
 
@@ -203,7 +203,7 @@ openclaw status
 
 > **`gateway.mode` must be set.** The gateway refuses to start unless `gateway.mode` is configured (this template sets `gateway.mode: "local"`). If you hand-build a config and omit it, the gateway will fail to start with a non-obvious error.
 
-> **CLI verbs:** `openclaw gateway start` runs the gateway in the foreground (handy for first-run testing); `openclaw gateway restart` reloads an already-running gateway after a config change; the systemd units in `infra/systemd/*` use `openclaw gateway run --port …` to run it as a managed background service. All are valid — pick `start` while testing and the systemd-managed `run` for a persistent install.
+> **CLI verbs:** `openclaw gateway start` runs the gateway in the foreground (handy for first-run testing); `openclaw gateway restart` reloads an already-running gateway after a config change; the systemd units in `setup/infra/systemd/*` use `openclaw gateway run --port …` to run it as a managed background service. All are valid — pick `start` while testing and the systemd-managed `run` for a persistent install.
 
 Once the gateway is running and Telegram is configured, messages in your group should start hitting the agent.
 

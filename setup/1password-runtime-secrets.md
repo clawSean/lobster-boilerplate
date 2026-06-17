@@ -6,7 +6,7 @@ profile).
 
 Do not install `openclaw-second-gateway.service` for a first-time/default setup.
 That file is a separate-gateway example for an isolated second gateway (see
-`docs/multi-gateway/`).
+`augments/multi-gateway/`).
 
 ## Option A: simple `.env` fallback
 
@@ -45,18 +45,18 @@ This pattern keeps API keys/tokens out of git and out of long-lived files on dis
 ## Architecture
 
 1. `systemd` starts `openclaw-gateway.service`.
-2. `ExecStartPre` runs `infra/scripts/openclaw-env-from-1password`.
+2. `ExecStartPre` runs `setup/infra/scripts/openclaw-env-from-1password`.
 3. Script pulls secrets via `op read` and writes `/run/openclaw/env` with `0600` permissions.
 4. `EnvironmentFile=/run/openclaw/env` loads vars for OpenClaw.
 5. OpenClaw starts and resolves `${VAR}` references.
 
 ## Files
 
-- `infra/systemd/openclaw-runtime-from-1password.service`
-- `infra/scripts/openclaw-env-from-1password`
-- `infra/env/openclaw.runtime.env.template`
+- `setup/infra/systemd/openclaw-runtime-from-1password.service`
+- `setup/infra/scripts/openclaw-env-from-1password`
+- `setup/infra/env/openclaw.runtime.env.template`
 
-`infra/systemd/openclaw-runtime-from-1password.service` is a service-body
+`setup/infra/systemd/openclaw-runtime-from-1password.service` is a service-body
 example. In a normal install, copy/merge those directives into the canonical
 `openclaw-gateway.service` or an `openclaw-gateway.service.d/` drop-in. Do not
 create a second gateway unless you intentionally want a separate agent/profile.

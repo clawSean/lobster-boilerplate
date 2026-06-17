@@ -1,7 +1,7 @@
 # Multi-gateway setups
 
 Most people only ever need the **default** OpenClaw gateway documented in
-`docs/core/`. This section is for the less common — but very useful — case where
+`setup/`. This section is for the less common — but very useful — case where
 you intentionally run **more than one** OpenClaw gateway on the same host, each
 with its own working directory, service, port, bot token, and secrets.
 
@@ -41,6 +41,6 @@ gateway roles later without restructuring:
 
 The base pattern is backed by these files (rename them per gateway role):
 
-- `infra/systemd/openclaw-second-gateway.service`
-- `infra/scripts/render-second-gateway-env-from-1password.sh`
-- `infra/env/second-gateway.env.template`
+- `setup/infra/systemd/openclaw-second-gateway.service`
+- `setup/infra/scripts/render-second-gateway-env-from-1password.sh`
+- `setup/infra/env/second-gateway.env.template`

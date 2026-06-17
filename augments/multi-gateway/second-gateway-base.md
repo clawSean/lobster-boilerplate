@@ -7,7 +7,7 @@
 > working directory, service, port, bot token, and 1Password item — separate
 > from the default gateway.
 >
-> For first-time/default setup, use `docs/core/1password-runtime-secrets.md` and
+> For first-time/default setup, use `setup/1password-runtime-secrets.md` and
 > wire secrets into `openclaw-gateway.service` instead.
 
 This is the **base** of the [Multi-gateway setups](./README.md) section. The
@@ -18,9 +18,9 @@ This pattern keeps secrets out of git and out of static systemd units.
 
 ## Layout
 
-- `infra/systemd/openclaw-second-gateway.service`
-- `infra/scripts/render-second-gateway-env-from-1password.sh`
-- `infra/env/second-gateway.env.template`
+- `setup/infra/systemd/openclaw-second-gateway.service`
+- `setup/infra/scripts/render-second-gateway-env-from-1password.sh`
+- `setup/infra/env/second-gateway.env.template`
 
 These paths are intentionally `second-gateway`-specific so they never collide
 with the default gateway. Replace the service name, working directory, runtime

@@ -23,9 +23,9 @@ The runtime mechanics are already provided by the
 reinvent the systemd unit or the 1Password injection script — copy and rename
 them for this role:
 
-- `infra/systemd/openclaw-second-gateway.service` → e.g. `openclaw-doctor-agent.service`
-- `infra/scripts/render-second-gateway-env-from-1password.sh`
-- `infra/env/second-gateway.env.template`
+- `setup/infra/systemd/openclaw-second-gateway.service` → e.g. `openclaw-doctor-agent.service`
+- `setup/infra/scripts/render-second-gateway-env-from-1password.sh`
+- `setup/infra/env/second-gateway.env.template`
 
 Point the renamed service at this module's workspace and config templates.
 

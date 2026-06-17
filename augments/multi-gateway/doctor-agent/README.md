@@ -69,6 +69,6 @@ The mechanics of *how* a second gateway loads secrets, gets its own systemd
 service, and binds a distinct port live in the
 [second-gateway base pattern](../second-gateway-base.md). This module only adds
 the agent's **mission, posture, and workspace prompts** on top. When you deploy,
-copy the base infra (`infra/systemd/openclaw-second-gateway.service`, etc.),
+copy the base infra (`setup/infra/systemd/openclaw-second-gateway.service`, etc.),
 rename it for this role (e.g. `openclaw-doctor-agent`), and point it at this
 module's templates.
