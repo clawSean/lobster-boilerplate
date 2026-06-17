@@ -32,9 +32,10 @@ gateway roles later without restructuring:
 - **[Doctor / breakglass agent](./doctor-agent/README.md)** — a worked example
   built on the base pattern: a docs-first operational agent for diagnosis and
   remediation, with a clear Doctor-mode vs Advisor-mode distinction.
-- _Sandbox gateway (planned)_ — a future sibling for a throwaway/experimentation
-  gateway. Not yet written; it will live next to `doctor-agent/` and reuse the
-  same base.
+- **[Sandbox gateway](./sandbox-gateway.md)** — a deliberately locked-down
+  gateway for safely testing bots, slash commands, or risky configs: aggressive
+  tool/channel lockdown on top of the base, plus the Docker-vs-pseudo-sandbox
+  tradeoff. Contributed by [@nicknmorty](https://github.com/nicknmorty).
 
 ## Supporting infra
 
