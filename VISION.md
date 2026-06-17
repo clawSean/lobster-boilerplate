@@ -2,14 +2,14 @@
 
 **lobster-boilerplate is a setup _assistant_ — not a framework, and not a frozen copy-paste kit.**
 
-It takes a newcomer from a fresh VPS to a running OpenClaw + Telegram agent on one readable path, and its durable value is **judgment + a map**: it explains the *why* behind each good-default config choice (and its failure mode), then routes you to the right sibling project for anything beyond the core. The templates exist for convenience; the point is the guidance and the pointers.
+It takes a newcomer from a fresh host (a VPS, a Raspberry Pi, a home server, a cloud VM — anywhere OpenClaw runs) to a running OpenClaw + Telegram agent on one readable path, and its durable value is **judgment + a map**: it explains the *why* behind each good-default config choice (and its failure mode), then routes you to the right sibling project for anything beyond the core. The templates exist for convenience; the point is the guidance and the pointers.
 
 ## Tenets
 
 The docs should satisfy all eight:
 
 1. **Explain the _why_, not just the _what_.** Every key, flag, and choice ships with its rationale *and* its failure mode.
-2. **One readable fresh-VPS → running-agent path.** The core flow stays single-gateway, linear, beginner-safe. Advanced material never interrupts the happy path.
+2. **One readable fresh-host → running-agent path.** The core flow stays single-gateway, linear, beginner-safe. Advanced material never interrupts the happy path.
 3. **Be a map, not a monolith.** Prefer linking siblings (living registries/repos) over absorbing them. Only *vendor* content when single-clone friction clearly beats drift — and when you do, track provenance + credit. (The doctor-agent consolidation is the precedent and the exception, not the default.)
 4. **Sanitized by default.** Never ship real secrets, identities, host paths, or bot handles. Placeholders everywhere; secret handling is a first-class topic.
 5. **Credit upstream visibly.** Migrated or adapted material keeps its author's name.

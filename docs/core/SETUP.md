@@ -1,6 +1,6 @@
 # OpenClaw + Telegram bootstrap (boilerplate)
 
-This is a **starting point** for bringing a fresh VPS online with an OpenClaw agent similar to Sean's setup.
+This is a **starting point** for bringing a fresh host online with an OpenClaw agent similar to Sean's setup — a VPS, a Raspberry Pi, a home server, a cloud VM, or your own Linux/Mac box.
 
 It goes a bit **beyond** the default OpenClaw onboarding by:
 
