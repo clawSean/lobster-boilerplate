@@ -207,4 +207,46 @@ openclaw status
 
 Once the gateway is running and Telegram is configured, messages in your group should start hitting the agent.
 
-This repo is intentionally simple – adjust the template + docs to your taste and commit your own defaults.
+---
+
+## 8. Verify it works
+
+Quick checks that the setup is actually live:
+
+```bash
+openclaw status        # Gateway running? channels connected? model reachable?
+```
+
+- **Telegram:** DM your bot (or @-mention it in a paired group) — you should get a reply.
+- **Web search:** ask the agent something that needs a live lookup; confirm it answers without a "no search provider" error.
+- **Memory:** ask it to remember something, then in a new turn ask it back.
+
+If `openclaw status` shows the gateway up but a channel or model unhealthy, that line tells you which piece to fix — then re-check.
+
+---
+
+## 9. Troubleshooting
+
+First move for almost anything: **`openclaw doctor`** — it diagnoses config, Gateway, plugins, and channels, and `openclaw doctor --fix` auto-repairs the common problems (including migrating legacy config shapes).
+
+```bash
+openclaw doctor          # diagnose
+openclaw doctor --fix    # diagnose + auto-repair
+```
+
+Common gotchas:
+
+| Symptom | Likely cause / fix |
+|---------|--------------------|
+| Gateway won't start | `gateway.mode` missing → set `gateway.mode: "local"` (§7), or run `openclaw doctor --fix`. |
+| Bot silent in a group | Telegram privacy mode — message BotFather `/setprivacy` → Disable, or @-mention the bot. Also confirm the chat id is allow-listed. |
+| Bot silent in DMs | DM not paired / your user id not allowed — check the Telegram `dmPolicy` / allow-list. |
+| "No search provider" | Brave key not wired — see §4 (`plugins.entries.brave.config.webSearch.apiKey`). |
+| Model / auth errors | Model auth profile missing or wrong provider id — `openclaw doctor` will flag it; see §4. |
+| Config edits not taking effect | `openclaw gateway restart` after editing the config. |
+
+When in doubt, the upstream reference is [docs.openclaw.ai](https://docs.openclaw.ai).
+
+---
+
+This repo is intentionally a *setup assistant*, not a framework — adjust the template + docs to taste and commit your own defaults.
