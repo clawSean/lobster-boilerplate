@@ -9,6 +9,8 @@ It goes a bit **beyond** the default OpenClaw onboarding by:
 - documenting the **Telegram group permission syntax** so you can safely add more people/groups
 - including an optional helper for **Venice Diem** balance/rate limits.
 
+> 🔒 **Before you start:** skim [security-hardening.md](security-hardening.md) and decide your trust boundaries first (loopback bind, user allowlists, secrets in `.env`, firewall). Security is part of getting running, not a bolt-on.
+
 ---
 
 ## 1. System + Node
@@ -209,43 +211,9 @@ Once the gateway is running and Telegram is configured, messages in your group s
 
 ---
 
-## 8. Verify it works
+## 8. Verify it works, and troubleshooting
 
-Quick checks that the setup is actually live:
-
-```bash
-openclaw status        # Gateway running? channels connected? model reachable?
-```
-
-- **Telegram:** DM your bot (or @-mention it in a paired group) — you should get a reply.
-- **Web search:** ask the agent something that needs a live lookup; confirm it answers without a "no search provider" error.
-- **Memory:** ask it to remember something, then in a new turn ask it back.
-
-If `openclaw status` shows the gateway up but a channel or model unhealthy, that line tells you which piece to fix — then re-check.
-
----
-
-## 9. Troubleshooting
-
-First move for almost anything: **`openclaw doctor`** — it diagnoses config, Gateway, plugins, and channels, and `openclaw doctor --fix` auto-repairs the common problems (including migrating legacy config shapes).
-
-```bash
-openclaw doctor          # diagnose
-openclaw doctor --fix    # diagnose + auto-repair
-```
-
-Common gotchas:
-
-| Symptom | Likely cause / fix |
-|---------|--------------------|
-| Gateway won't start | `gateway.mode` missing → set `gateway.mode: "local"` (§7), or run `openclaw doctor --fix`. |
-| Bot silent in a group | Telegram privacy mode — message BotFather `/setprivacy` → Disable, or @-mention the bot. Also confirm the chat id is allow-listed. |
-| Bot silent in DMs | DM not paired / your user id not allowed — check the Telegram `dmPolicy` / allow-list. |
-| "No search provider" | Brave key not wired — see §4 (`plugins.entries.brave.config.webSearch.apiKey`). |
-| Model / auth errors | Model auth profile missing or wrong provider id — `openclaw doctor` will flag it; see §4. |
-| Config edits not taking effect | `openclaw gateway restart` after editing the config. |
-
-When in doubt, the upstream reference is [docs.openclaw.ai](https://docs.openclaw.ai).
+Once the gateway is up: confirm it's actually live (`openclaw status`, DM your bot, test web search + memory), and reach for **`openclaw doctor`** / `openclaw doctor --fix` when something's off. The full verify checklist + common-gotchas table live in **[troubleshooting/](../troubleshooting/README.md)**.
 
 ---
 
