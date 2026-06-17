@@ -3,9 +3,8 @@ set -euo pipefail
 
 ROLLBACK_VERSION="${1:-${ROLLBACK_VERSION:-}}"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-OPENCLAW_PACKAGE="${OPENCLAW_PACKAGE:-openclaw}"
-OPENCLAW_SERVICE="${OPENCLAW_SERVICE:-openclaw-gateway.service}"
 OPENCLAW_HOME="${OPENCLAW_HOME:-$HOME/.openclaw}"
+export OPENCLAW_HOME
 LOG_ROOT="${LOG_ROOT:-$OPENCLAW_HOME/logs}"
 KNOWN_BAD_VERSIONS="${KNOWN_BAD_VERSIONS:-}"
 ALLOW_KNOWN_BAD="${ALLOW_KNOWN_BAD:-0}"
@@ -13,6 +12,7 @@ VALIDATE_COMMAND="${VALIDATE_COMMAND:-openclaw config validate}"
 POST_STATUS_COMMAND="${POST_STATUS_COMMAND:-openclaw gateway status}"
 
 timestamp="$(date +%Y%m%d-%H%M%S)"
+log_file=""
 
 usage() {
   cat <<EOF
@@ -20,8 +20,6 @@ Usage:
   $(basename "$0") <version>
 
 Environment:
-  OPENCLAW_PACKAGE=openclaw
-  OPENCLAW_SERVICE=openclaw-gateway.service
   OPENCLAW_HOME=$HOME/.openclaw
   KNOWN_BAD_VERSIONS="2026.x.y 2026.x.z"
   ALLOW_KNOWN_BAD=1
@@ -54,53 +52,53 @@ is_known_bad_version() {
   return 1
 }
 
+on_error() {
+  local status=$?
+  trap - ERR
+  printf '\nERROR: OpenClaw rollback failed with exit status %s.\n' "$status" >&2
+  [ -n "$log_file" ] && printf 'Log: %s\n' "$log_file" >&2
+  cat >&2 <<EOF
+
+Recovery checks:
+  openclaw update repair --yes
+  openclaw gateway status
+  openclaw gateway restart
+
+Manual package recovery, if needed:
+  openclaw update --tag $ROLLBACK_VERSION --yes
+EOF
+  openclaw update repair --yes >/dev/null 2>&1 || true
+  $POST_STATUS_COMMAND >/dev/null 2>&1 || true
+  exit "$status"
+}
+
 preflight() {
   [ -n "$ROLLBACK_VERSION" ] || { usage; die "rollback version is required"; }
   validate_version "$ROLLBACK_VERSION" || die "invalid OpenClaw version: $ROLLBACK_VERSION"
   if is_known_bad_version && [ "$ALLOW_KNOWN_BAD" != "1" ]; then
     die "refusing known-bad OpenClaw version $ROLLBACK_VERSION; set ALLOW_KNOWN_BAD=1 only for an isolated validation pass"
   fi
-  command -v npm >/dev/null || die "npm is required"
   command -v openclaw >/dev/null || die "openclaw CLI is required"
   install -d -m 700 "$LOG_ROOT"
+  log_file="$LOG_ROOT/openclaw-safe-rollback-$ROLLBACK_VERSION-$timestamp.log"
 }
 
-stop_service() {
-  log "Stopping OpenClaw service"
-  if command -v systemctl >/dev/null 2>&1; then
-    run systemctl --user stop "$OPENCLAW_SERVICE" || run sudo systemctl stop "$OPENCLAW_SERVICE" || true
-  else
-    log "systemctl is unavailable; stop the OpenClaw process manually if it is running"
-  fi
+create_restart_backup() {
+  log "Creating restart-safety backup"
+  run "$SCRIPT_DIR/openclaw-make-restart-backup.sh" "pre-rollback-$ROLLBACK_VERSION"
 }
 
 install_target() {
-  log "Installing $OPENCLAW_PACKAGE@$ROLLBACK_VERSION"
-  run npm config get ignore-scripts
-  run npm rm -g "$OPENCLAW_PACKAGE" || true
-  run npm cache verify
-  run npm install -g "$OPENCLAW_PACKAGE@$ROLLBACK_VERSION"
+  log "Running staged OpenClaw rollback"
+  run openclaw update --tag "$ROLLBACK_VERSION" --yes
 }
 
-verify_install() {
-  log "Verifying install"
-  run openclaw version
+post_update_validation() {
+  log "Post-rollback validation"
+  run openclaw --version
+  # Intentionally split command strings so operators can override with flags.
   run $VALIDATE_COMMAND
-}
-
-start_service() {
-  log "Starting OpenClaw service"
-  if command -v systemctl >/dev/null 2>&1; then
-    run systemctl --user start "$OPENCLAW_SERVICE" || run sudo systemctl start "$OPENCLAW_SERVICE" || true
-  else
-    log "systemctl is unavailable; start OpenClaw manually"
-  fi
-}
-
-post_start_validation() {
-  log "Post-start validation"
-  run $VALIDATE_COMMAND
-  $POST_STATUS_COMMAND || true
+  run $POST_STATUS_COMMAND
 }
 
 main() {
@@ -109,14 +107,14 @@ main() {
     exit 0
   fi
   preflight
+  trap on_error ERR
   log "Safe OpenClaw rollback starting"
   printf 'Target version: %s\n' "$ROLLBACK_VERSION"
-  "$SCRIPT_DIR/openclaw-make-restart-backup.sh" "pre-rollback-$ROLLBACK_VERSION" 2>/dev/null || true
-  stop_service
-  install_target | tee "$LOG_ROOT/openclaw-safe-rollback-$ROLLBACK_VERSION-$timestamp.log"
-  verify_install
-  start_service
-  post_start_validation
+  create_restart_backup
+  {
+    install_target
+    post_update_validation
+  } 2>&1 | tee "$log_file"
 }
 
 main "$@"

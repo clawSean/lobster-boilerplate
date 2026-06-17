@@ -12,8 +12,8 @@ local paths into the scripts.
 
 ## Files
 
-- `infra/scripts/openclaw-safe-upgrade.sh` - stop service, back up state/package, install target version, validate, restart.
-- `infra/scripts/openclaw-safe-rollback.sh` - same flow for a specific previous version.
+- `infra/scripts/openclaw-safe-upgrade.sh` - back up config/auth material, run the staged `openclaw update --tag` path, validate, and check gateway health.
+- `infra/scripts/openclaw-safe-rollback.sh` - same staged update flow for a specific previous version.
 - `infra/scripts/openclaw-safe-switch.sh` - small `upgrade` / `rollback` wrapper.
 - `infra/scripts/openclaw-make-restart-backup.sh` - backs up config, env files, and auth profiles with locked-down permissions.
 - `infra/scripts/openclaw-restore-restart-backup.sh` - restores a restart backup and runs `openclaw config validate`.
@@ -49,11 +49,10 @@ The script:
 1. Resolves `latest` through npm when needed.
 2. Refuses versions listed in `KNOWN_BAD_VERSIONS` unless `ALLOW_KNOWN_BAD=1`.
 3. Creates a restart-safety backup of config, env files, and auth profiles.
-4. Backs up the current global npm package directory when it exists.
-5. Stops the configured service.
-6. Reinstalls the global package.
-7. Runs `openclaw config validate`.
-8. Starts the service and prints follow-up commands.
+4. Runs `openclaw update --tag <version> --yes`.
+5. Relies on OpenClaw's first-party staged updater to coordinate package install, service restart, and gateway verification.
+6. Runs `openclaw --version`, `openclaw config validate`, and `openclaw gateway status`.
+7. Prints recovery commands if the update fails.
 
 ## Rollback
 
@@ -79,13 +78,13 @@ infra/scripts/openclaw-restore-restart-backup.sh ~/.openclaw/backups/restart-saf
 ```
 
 The restore script validates config before telling you to restart anything.
+It also creates a fresh `pre-restore-*` backup before overwriting live config or auth files.
 
 ## Useful Environment Variables
 
 - `OPENCLAW_PACKAGE` - npm package name, default `openclaw`.
 - `OPENCLAW_SERVICE` - systemd unit name, default `openclaw-gateway.service`.
 - `OPENCLAW_HOME` - state directory, default `~/.openclaw`.
-- `BACKUP_ROOT` - package backup root.
 - `LOG_ROOT` - script log directory.
 - `ROLLBACK_VERSION` - rollback hint printed during upgrades.
 - `KNOWN_BAD_VERSIONS` - space-separated version denylist for your environment.
@@ -96,6 +95,8 @@ The restore script validates config before telling you to restart anything.
 ## Safety Notes
 
 - Keep backup directories out of git. They can contain env files and OAuth/auth profile material.
-- Review `npm config get ignore-scripts` before upgrades if your threat model requires locked-down lifecycle scripts.
+- `openclaw update` already stages npm package updates in a temporary prefix before swapping the package tree.
 - Run `openclaw config validate` after every config restore or manual config edit.
 - Do not restart a production gateway until validation passes.
+- If update finalization fails after the core package changes, try `openclaw update repair --yes`.
+- If config repair is needed, use `openclaw doctor --fix` after reviewing what it will change.

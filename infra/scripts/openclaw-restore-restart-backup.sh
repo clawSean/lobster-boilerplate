@@ -7,6 +7,7 @@ if [ "$#" -ne 1 ]; then
 fi
 
 backup_dir="${1%/}"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 OPENCLAW_HOME="${OPENCLAW_HOME:-$HOME/.openclaw}"
 export OPENCLAW_HOME
 
@@ -24,6 +25,8 @@ install -d -m 700 "$OPENCLAW_HOME"
 
 printf 'Restoring OpenClaw restart-safety backup from: %s\n' "$backup_dir"
 printf 'Target OpenClaw home: %s\n' "$OPENCLAW_HOME"
+
+"$SCRIPT_DIR/openclaw-make-restart-backup.sh" "pre-restore"
 
 cp -p "$backup_dir/openclaw.json" "$OPENCLAW_HOME/openclaw.json"
 

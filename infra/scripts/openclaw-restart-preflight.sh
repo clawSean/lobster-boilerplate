@@ -2,6 +2,7 @@
 set -euo pipefail
 
 OPENCLAW_HOME="${OPENCLAW_HOME:-$HOME/.openclaw}"
+export OPENCLAW_HOME
 OPENCLAW_SERVICE="${OPENCLAW_SERVICE:-openclaw-gateway.service}"
 VALIDATE_COMMAND="${VALIDATE_COMMAND:-openclaw config validate}"
 STATUS_COMMAND="${STATUS_COMMAND:-openclaw gateway status}"
@@ -76,4 +77,7 @@ else
   printf 'FAIL: %s restart preflight blocker(s)\n' "$failures"
 fi
 
-exit "$failures"
+if [ "$failures" -eq 0 ]; then
+  exit 0
+fi
+exit 1
