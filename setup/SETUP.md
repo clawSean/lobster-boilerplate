@@ -19,7 +19,7 @@ Have these ready before you start — it makes the rest of the walkthrough smoot
 
 **Host**
 
-- A Linux host you control (VPS, Raspberry Pi, home server, cloud VM) or your own Linux/Mac box. A recent Ubuntu LTS / Debian-ish system is assumed below.
+- A Linux host you control (VPS, Raspberry Pi, home server, cloud VM) or your own Linux/Mac box. A recent Ubuntu LTS / Debian-ish system is assumed below; **🍎 macOS deltas are called out inline** where the steps differ (Node install, the persistent service, the firewall).
 - Rough sizing: **2 GB RAM minimum**, 4–8 GB comfortable (memory + local embeddings + a headless browser get hungry); ~2 cores; 20+ GB disk.
 - SSH access — and ideally [Tailscale](tailscale-setup.md) for safe remote reach (optional but recommended).
 
@@ -41,7 +41,7 @@ Have these ready before you start — it makes the rest of the walkthrough smoot
 
 ## Architecture — the shape of what you're building
 
-Before the steps, here's what you're standing up. One OpenClaw **Gateway** runs on your host — bound to localhost behind token auth — and you reach the **agent** through Telegram, while reaching the **box itself** privately over Tailscale/SSH. The agent works against your **workspace** (memory, knowledge, skills, config) and **tools**, calls out to your **model provider(s)**, pulls **secrets** from `.env`/1Password at runtime, and is kept alive by **systemd**.
+Before the steps, here's what you're standing up. One OpenClaw **Gateway** runs on your host — bound to localhost behind token auth — and you reach the **agent** through Telegram, while reaching the **box itself** privately over Tailscale/SSH. The agent works against your **workspace** (memory, knowledge, skills, config) and **tools**, calls out to your **model provider(s)**, pulls **secrets** from `.env`/1Password at runtime, and is kept alive by the OS service manager (**systemd** on Linux, **launchd** on macOS).
 
 ```mermaid
 flowchart TB
@@ -57,7 +57,7 @@ flowchart TB
             ws[("Workspace<br/>memory · knowledge · skills · config")]
         end
         secrets[/"🔑 .env / 1Password<br/>runtime secret injection"/]
-        svc["⚙️ systemd<br/>persistent service"]
+        svc["⚙️ systemd / launchd<br/>persistent service"]
     end
 
     providers{{"☁️ Model providers<br/>Anthropic · OpenAI · Venice"}}
@@ -97,6 +97,8 @@ flowchart TB
 curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt-get install -y nodejs
 ```
+
+> 🍎 **macOS:** skip the apt / NodeSource lines — install Node with Homebrew (`brew install node@22`) or nvm. Everything from §2 on is identical.
 
 ## 2. Install OpenClaw globally
 
@@ -282,6 +284,8 @@ openclaw status
 > **`gateway.mode` must be set.** The gateway refuses to start unless `gateway.mode` is configured (this template sets `gateway.mode: "local"`). If you hand-build a config and omit it, the gateway will fail to start with a non-obvious error.
 
 > **CLI verbs:** `openclaw gateway start` runs the gateway in the foreground (handy for first-run testing); `openclaw gateway restart` reloads an already-running gateway after a config change; the systemd units in `setup/infra/systemd/*` use `openclaw gateway run --port …` to run it as a managed background service. All are valid — pick `start` while testing and the systemd-managed `run` for a persistent install.
+
+> 🍎 **macOS:** the `setup/infra/systemd/*` units are Linux-only. On macOS, run **`openclaw gateway install`** — it sets up a launchd **LaunchAgent** automatically, then `openclaw gateway start / stop / restart / status` manage it. (`gateway install` is per-OS: launchd on macOS, systemd on Linux, schtasks on Windows.)
 
 Once the gateway is running and Telegram is configured, messages in your group should start hitting the agent.
 

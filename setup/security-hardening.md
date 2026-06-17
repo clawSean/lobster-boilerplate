@@ -45,6 +45,8 @@ sudo ufw allow from 192.168.4.0/22 to any port 22 proto tcp
 
 Do **not** open the OpenClaw gateway port to the world — ideally not even to the LAN.
 
+> 🍎 **macOS:** UFW is Linux-only. On a Mac, enable the built-in **Application Firewall** (System Settings → Network → Firewall, or `sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on`) and keep remote access on **Tailscale** rather than exposing ports. Same principle: the gateway binds to loopback so it isn't network-reachable regardless — the firewall is defense-in-depth.
+
 ## 5. Harden SSH
 
 Disable password auth, disable root login, use keys, and prefer Tailscale-only SSH. SSH is usually the one public-ish door people forget about.
