@@ -103,7 +103,7 @@ sudo apt-get install -y nodejs
 ## 2. Install OpenClaw globally
 
 ```bash
-npm install -g openclaw
+npm install -g openclaw@2026.6.6
 openclaw --version
 ```
 

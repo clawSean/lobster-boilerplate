@@ -37,7 +37,8 @@ xcode-select --install
 > Important: for QMD 2.x, install from npm package name.
 
 ```bash
-bun install -g @tobilu/qmd@latest
+# qmd is authored by @tobilu (npm: @tobilu/qmd); pin to a known-good version
+bun install -g @tobilu/qmd@2.0.1
 qmd --version
 ```
 

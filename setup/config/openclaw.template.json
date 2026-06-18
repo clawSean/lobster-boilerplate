@@ -114,7 +114,7 @@
           "ollama/qwen2.5:1.5b"
         ]
       },
-      "workspace": "/root/.openclaw/workspace",
+      "workspace": "~/.openclaw/workspace",
       "contextTokens": 14000,
       "compaction": { "mode": "safeguard" },
       "maxConcurrent": 4,

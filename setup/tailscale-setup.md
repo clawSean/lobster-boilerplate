@@ -1,6 +1,6 @@
 # Tailscale Setup Guide
 
-**Verified with: OpenClaw 2026.2.26**
+**Verified with: OpenClaw 2026.6.1**
 
 **Goal:** Create a private encrypted network (tailnet) between two or more machines. Zero impact on existing services, SSH, DNS, web hosting, or firewall rules.
 

@@ -23,7 +23,7 @@ It's not just a copy-paste kit: it takes you from a fresh host — a VPS, a Rasp
 
 ```bash
 # 1. Install Node 22+ and OpenClaw
-npm install -g openclaw
+npm install -g openclaw@2026.6.6
 
 # 2. Initialize local config + workspace (or: openclaw onboard — interactive wizard)
 openclaw setup
@@ -46,7 +46,7 @@ openclaw status                        # gateway up? then DM your bot to confirm
 - **`setup/config/openclaw.template.json`** — minimal, opinionated OpenClaw config with placeholders for your tokens/keys.
 - **`setup/config/openclaw.full-example.json5`** — maximal JSON5 reference showing most documented keys with safe placeholders.
 - **`setup/infra/`** — systemd units + 1Password env-render scripts for running the gateway(s) as persistent services.
-- **`augments/`** — optional add-ons once the core path works: `multi-gateway/` (a second isolated gateway — the generic `second-gateway` base, a worked **Doctor / breakglass agent**, and a **Sandbox gateway** lockdown pattern), `skills/` (starter skill *guides*, each `.md` walks you through building the skill), `memory/` (local embeddings, qmd deep-dives), `browser-relay.md`, and `airbnb-mcp-setup.md`. For ready-made skills, see [SkillReef](#ecosystem--see-also).
+- **`augments/`** — optional add-ons once the core path works: `multi-gateway/` (a second isolated gateway — the generic `second-gateway` base, a worked **Doctor / breakglass agent**, and a **Sandbox gateway** lockdown pattern), `skills/` (starter skill *guides*, each `.md` walks you through building the skill), `memory/` (a minimal 4-cron curation loop, plus optional local embeddings / qmd — see [`augments/memory/`](augments/memory/)), `browser-relay.md`, and `airbnb-mcp-setup.md`. For ready-made skills, see [SkillReef](#ecosystem--see-also).
 - **`troubleshooting/`** — `openclaw doctor`, verify-it-works checks, and the common-gotchas table.
 
 ## Ecosystem & See-also
@@ -55,7 +55,7 @@ lobster-boilerplate is a map as much as a kit. For anything beyond the core path
 
 - **[SkillReef](https://github.com/clawSean/skillreef)** — the living registry of public-safe OpenClaw skills. Browse for ready-made skills or publish your own. (This repo's `skills/` is a curated starter subset.)
 - **[ClawHub](https://clawhub.ai)** — hub for shareable skills & docs; install with `openclaw skills install <slug>` or `openclaw plugins install clawhub:<pkg>`.
-- **Bottom Feeder** (clawSean) — depth-first knowledge-crawler skill; it *populates* the `knowledge/` base your `knowledge-search` skill reads.
+- **[Bottom Feeder](https://github.com/clawSean/bottom-feeder)** (clawSean) — depth-first knowledge-crawler skill; it *populates* the `knowledge/` base your `knowledge-search` skill reads.
 - **[Crustacean Cognition](https://github.com/clawSean/crustacean-cognition)** — the current advanced memory architecture (4C pipeline). Use this for serious memory work.
 - **[openclaw-x-twitter-kit](https://github.com/clawSean/openclaw-x-twitter-kit)** — deeper X/Twitter capabilities than the bundled `search-twitter` guide.
 - **[OpenClaw Usage Meter](https://github.com/nicknmorty/openclaw-usage-meter)** (nicknmorty) — usage + cost reporting for your agent sessions. Know what you're spending.
