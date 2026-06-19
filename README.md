@@ -23,7 +23,7 @@ It's not just a copy-paste kit: it takes you from a fresh host — a VPS, a Rasp
 
 ```bash
 # 1. Install Node 22+ and OpenClaw
-npm install -g openclaw@2026.6.6
+npm install -g openclaw@2026.6.1
 
 # 2. Initialize local config + workspace (or: openclaw onboard — interactive wizard)
 openclaw setup

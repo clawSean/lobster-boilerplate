@@ -55,7 +55,7 @@ Disable password auth, disable root login, use keys, and prefer Tailscale-only S
 
 It watches logs for repeated failed logins and temporarily bans the source IP via firewall rules. Not magic, but it cuts brute-force noise and adds an automated response around SSH.
 
-> 🍎 **macOS:** Fail2ban is Linux-oriented. The closest native equivalent is **SSHGuard** wired to macOS's built-in **PF** firewall — it ingests the auth/system logs, scores repeat offenders, and blocks them via a PF `<sshguard>` table. Install with Homebrew (`brew install sshguard`); the current formula sets it up for PF. Prefer it over heavier collaborative IPS like CrowdSec for a single personal box. *(Per [SSHGuard docs](https://www.sshguard.net/) + the [Homebrew formula](https://formulae.brew.sh/formula/sshguard); not dogfooded on our Linux hosts.)*
+> 🍎 **macOS:** Fail2ban is Linux-oriented. The closest native equivalent is **SSHGuard** wired to macOS's built-in **PF** firewall — it ingests the auth/system logs, scores repeat offenders, and blocks them via a PF `<sshguard>` table. Install with Homebrew (`brew install sshguard`), then select the **PF backend**, add the `<sshguard>` table to `/etc/pf.conf`, and enable PF (off by default on macOS) — it's not automatic. Prefer it over heavier collaborative IPS like CrowdSec for a single personal box. *(Per [SSHGuard docs](https://www.sshguard.net/) + the [Homebrew formula](https://formulae.brew.sh/formula/sshguard); not dogfooded on our Linux hosts.)*
 
 ## 7. Validate config after every change
 
@@ -71,7 +71,7 @@ Any agent that can run shell, edit files, send messages, schedule jobs, call API
 
 ## 9. Backups / recovery before cleverness
 
-Back up config, workspace/memory, cron jobs, auth-profile metadata, systemd user services, and project repos. Keep secrets separate and intentionally handled. (Safe upgrade/rollback scripts live in [`infra/`](infra/) as a companion.)
+Back up config, workspace/memory, cron jobs, auth-profile metadata, systemd user services, and project repos. Keep secrets separate and intentionally handled. And treat OpenClaw upgrades as deliberate + reversible — snapshot config + workspace first, and keep your upgrade/rollback helpers in [`infra/`](infra/).
 
 ## 10. A recurring audit
 

@@ -366,7 +366,7 @@
       historyLimit: 50,
       replyToMode: "first", // off | first | all
       linkPreview: true,
-      streamMode: "partial", // off | partial | block
+      streaming: { mode: "partial" }, // off | partial | block
       draftChunk: {
         minChars: 200,
         maxChars: 800,

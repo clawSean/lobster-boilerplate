@@ -98,12 +98,12 @@ curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt-get install -y nodejs
 ```
 
-> 🍎 **macOS:** skip the apt / NodeSource lines — install Node with Homebrew (`brew install node@22`) or nvm. Everything from §2 on is identical.
+> 🍎 **macOS:** skip the apt / NodeSource lines — install Node with Homebrew: `brew install node@22 && brew link --overwrite --force node@22` (the versioned formula is keg-only, so `link` puts `node`/`npm` on your PATH), or use nvm. Everything from §2 on is identical.
 
 ## 2. Install OpenClaw globally
 
 ```bash
-npm install -g openclaw@2026.6.6
+npm install -g openclaw@2026.6.1
 openclaw --version
 ```
 

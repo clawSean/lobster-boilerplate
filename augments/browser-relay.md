@@ -1,6 +1,6 @@
 # OpenClaw Browser Relay (Chrome Extension) — Remote Gateway Setup
 
-**Verified with: OpenClaw 2026.6.1**
+**Verified with: OpenClaw 2026.2.26**
 
 **Last updated:** 2026-02-27
 

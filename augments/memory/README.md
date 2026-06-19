@@ -13,7 +13,7 @@ The lightest maintenance that keeps memory useful over time is a small set of sc
 | **Compile** | weekly | re-summarize and refresh the hot `MEMORY.md` index |
 | **Calibrate** | monthly | audit drift, fix structure, sanity-check the loop itself |
 
-Schedule them with OpenClaw cron (`openclaw cron …`, see [docs.openclaw.ai](https://docs.openclaw.ai)) and run the heavier passes (Compile/Calibrate) on a stronger model. That's it — **most setups never need more than this.** *(This is the exact cron shape Sean's box runs.)*
+Schedule them with OpenClaw cron (`openclaw cron …`, see [docs.openclaw.ai](https://docs.openclaw.ai)) and run the heavier passes (Compile/Calibrate) on a stronger model. That's it — **most setups never need more than this.** *(This is the exact cron shape this box is configured for — currently paused, but the proven baseline.)*
 
 ## Optional: faster retrieval as the pile grows
 

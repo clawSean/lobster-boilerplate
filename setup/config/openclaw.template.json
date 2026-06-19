@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastTouchedVersion": "2026.6.6"
+    "lastTouchedVersion": "2026.6.1"
   },
   "auth": {
     "profiles": {
@@ -189,7 +189,7 @@
         2222222222
       ],
       "groupPolicy": "allowlist",
-      "streamMode": "partial"
+      "streaming": { "mode": "partial" }
     }
   },
   "gateway": {
