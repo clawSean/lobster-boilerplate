@@ -1,0 +1,40 @@
+[Unit]
+# Separate gateway example only.
+# Do not install this for the default OpenClaw gateway. For normal first-time
+# setup, wire secrets into openclaw-gateway.service instead.
+#
+# This is the generic "second isolated gateway" pattern. Rename the service,
+# working directory, runtime directory, port, and 1Password item refs when you
+# create your own. See docs/multi-gateway/ for the full pattern and examples.
+Description=OpenClaw Second Gateway (example)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=/home/%i/.openclaw-second-gateway
+
+# Render runtime secrets from 1Password into tmpfs before start.
+ExecStartPre=/usr/local/bin/render-second-gateway-env-from-1password.sh /run/openclaw-second-gateway/env
+
+# Runtime env file (ephemeral, not checked into git)
+EnvironmentFile=/run/openclaw-second-gateway/env
+
+# Start in foreground (systemd supervises process lifecycle).
+# Note: port 18890 keeps this gateway distinct from the default gateway (18789).
+ExecStart=/home/%i/.npm-global/bin/openclaw gateway run --port 18890
+
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+
+# Hardening baseline
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/run/openclaw-second-gateway /home/%i/.openclaw-second-gateway
+
+[Install]
+WantedBy=multi-user.target

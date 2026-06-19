@@ -1,0 +1,231 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.6.1"
+  },
+  "auth": {
+    "profiles": {
+      "anthropic:default": {
+        "provider": "anthropic",
+        "mode": "token"
+      },
+      "venice:default": {
+        "provider": "venice",
+        "mode": "api_key"
+      },
+      "openai:default": {
+        "provider": "openai",
+        "mode": "oauth"
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "openai": {
+        "baseUrl": "https://api.openai.com/v1",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "gpt-5.5",
+            "name": "GPT-5.5",
+            "reasoning": true,
+            "input": ["text"],
+            "cost": { "input": 0.00001, "output": 0.00003, "cacheRead": 0, "cacheWrite": 0 },
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          },
+          {
+            "id": "gpt-5.4-mini",
+            "name": "GPT-5.4 mini",
+            "reasoning": true,
+            "input": ["text"],
+            "cost": { "input": 0.00001, "output": 0.00003, "cacheRead": 0, "cacheWrite": 0 },
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      },
+      "anthropic": {
+        "baseUrl": "https://api.anthropic.com/v1",
+        "api": "anthropic-messages",
+        "models": []
+      },
+      "venice": {
+        "baseUrl": "https://api.venice.ai/api/v1",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "deepseek-v3.2",
+            "name": "DeepSeek V3.2",
+            "reasoning": true,
+            "input": ["text"],
+            "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
+            "contextWindow": 53840,
+            "maxTokens": 8192
+          },
+          {
+            "id": "venice-uncensored",
+            "name": "Venice Uncensored (Dolphin-Mistral)",
+            "reasoning": false,
+            "input": ["text"],
+            "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
+            "contextWindow": 32768,
+            "maxTokens": 8192
+          },
+          {
+            "id": "kimi-k2-thinking",
+            "name": "Kimi K2 Thinking (via Venice)",
+            "reasoning": true,
+            "input": ["text"],
+            "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
+            "contextWindow": 262144,
+            "maxTokens": 8192
+          }
+        ]
+      },
+      "ollama": {
+        "baseUrl": "http://127.0.0.1:11434/v1",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "qwen2.5:1.5b",
+            "name": "Qwen2.5 1.5B (Ollama local)",
+            "reasoning": false,
+            "input": ["text"],
+            "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
+            "contextWindow": 32768,
+            "maxTokens": 4096
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "openai/gpt-5.5",
+        "fallbacks": [
+          "openai/gpt-5.4-mini",
+          "anthropic/claude-opus-4-8",
+          "anthropic/claude-sonnet-4-6",
+          "anthropic/claude-haiku-4-5",
+          "venice/kimi-k2-thinking",
+          "venice/deepseek-v3.2",
+          "ollama/qwen2.5:1.5b"
+        ]
+      },
+      "workspace": "~/.openclaw/workspace",
+      "contextTokens": 14000,
+      "compaction": { "mode": "safeguard" },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8,
+        "model": {
+          "primary": "anthropic/claude-haiku-4-5",
+          "fallbacks": ["anthropic/claude-sonnet-4-6"]
+        }
+      }
+    }
+  },
+  "tools": {
+    "web": {
+      "search": {
+        "enabled": true,
+        "provider": "brave",
+        "maxResults": 5
+      },
+      "fetch": {
+        "enabled": false
+      }
+    }
+  },
+  "messages": {
+    "ackReactionScope": "group-mentions",
+    "inbound": {
+      "debounceMs": 0
+    },
+    "queue": {
+      "mode": "interrupt",
+      "debounceMs": 500,
+      "cap": 20,
+      "drop": "summarize",
+      "byChannel": {
+        "telegram": "interrupt",
+        "whatsapp": "interrupt"
+      }
+    }
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "command-logger": { "enabled": true },
+        "session-memory": { "enabled": true }
+      }
+    }
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "dmPolicy": "pairing",
+      "botToken": "YOUR_TELEGRAM_BOT_TOKEN_HERE",
+      "groups": {
+        "*": {
+          "systemPrompt": "In Telegram groups, interruptions are normal. If multiple messages arrive while you're answering, treat the earlier question and the follow-ups as one combined request and answer them together. Do not forget the original question when a new message arrives; re-work your answer using the full recent conversation.",
+          "requireMention": false
+        },
+        "YOUR_GROUP_ID_HERE": {
+          "requireMention": false,
+          "enabled": true
+        }
+      },
+      "groupAllowFrom": [
+        1111111111,
+        2222222222
+      ],
+      "groupPolicy": "allowlist",
+      "streaming": { "mode": "partial" }
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "loopback",
+    "auth": {
+      "mode": "token",
+      "token": "YOUR_GATEWAY_TOKEN_HERE"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    }
+  },
+  "skills": {
+    "install": {
+      "nodeManager": "npm"
+    }
+  },
+  "plugins": {
+    "entries": {
+      "telegram": {
+        "enabled": true
+      },
+      "codex": {
+        "enabled": true
+      },
+      "brave": {
+        "config": {
+          "webSearch": {
+            "apiKey": "YOUR_BRAVE_API_KEY_HERE",
+            "mode": "web"
+          }
+        }
+      }
+    }
+  }
+}
