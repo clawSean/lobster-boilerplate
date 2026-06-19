@@ -55,6 +55,8 @@ Disable password auth, disable root login, use keys, and prefer Tailscale-only S
 
 It watches logs for repeated failed logins and temporarily bans the source IP via firewall rules. Not magic, but it cuts brute-force noise and adds an automated response around SSH.
 
+> 🍎 **macOS:** Fail2ban is Linux-oriented. The closest native equivalent is **SSHGuard** wired to macOS's built-in **PF** firewall — it ingests the auth/system logs, scores repeat offenders, and blocks them via a PF `<sshguard>` table. Install with Homebrew (`brew install sshguard`); the current formula sets it up for PF. Prefer it over heavier collaborative IPS like CrowdSec for a single personal box. *(Per [SSHGuard docs](https://www.sshguard.net/) + the [Homebrew formula](https://formulae.brew.sh/formula/sshguard); not dogfooded on our Linux hosts.)*
+
 ## 7. Validate config after every change
 
 Non-negotiable for OpenClaw — run this **before every restart**:
