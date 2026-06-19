@@ -150,13 +150,13 @@ The installed skill indexes:
 Default source root:
 
 ```text
-/root/.openclaw/workspace/knowledge
+~/.openclaw/workspace/knowledge
 ```
 
 Override it when needed:
 
 ```bash
-SOURCE_DIR=/path/to/another-knowledge-folder bash /root/.openclaw/workspace/skills/knowledge-search/scripts/ingest.sh
+SOURCE_DIR=/path/to/another-knowledge-folder bash ~/.openclaw/workspace/skills/knowledge-search/scripts/ingest.sh
 ```
 
 ## Current script behavior
@@ -175,13 +175,13 @@ SOURCE_DIR=/path/to/another-knowledge-folder bash /root/.openclaw/workspace/skil
 ### Ingest
 
 ```bash
-bash /root/.openclaw/workspace/skills/knowledge-search/scripts/ingest.sh
+bash ~/.openclaw/workspace/skills/knowledge-search/scripts/ingest.sh
 ```
 
 ### Query
 
 ```bash
-bash /root/.openclaw/workspace/skills/knowledge-search/scripts/query.sh "your question here" 5
+bash ~/.openclaw/workspace/skills/knowledge-search/scripts/query.sh "your question here" 5
 ```
 
 ## OpenClaw-compatible recurring ingest guidance
@@ -198,7 +198,7 @@ Recommended pattern:
 Suggested job message:
 
 ```text
-Run bash /root/.openclaw/workspace/skills/knowledge-search/scripts/ingest.sh for the knowledge base and report the final summary line.
+Run bash ~/.openclaw/workspace/skills/knowledge-search/scripts/ingest.sh for the knowledge base and report the final summary line.
 ```
 
 If you truly want host-level scheduling independent of OpenClaw, system crontab is still fine, but the default recommendation is OpenClaw cron.
@@ -229,7 +229,7 @@ Check the active source root and file types:
 Run ingest first:
 
 ```bash
-bash /root/.openclaw/workspace/skills/knowledge-search/scripts/ingest.sh
+bash ~/.openclaw/workspace/skills/knowledge-search/scripts/ingest.sh
 ```
 
 ### Ollama issues

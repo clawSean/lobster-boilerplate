@@ -17,7 +17,8 @@ Crypto price data and market info via CoinGecko API.
 
 3. **Scripts use `curl` + `jq`** — ensure both are installed:
    ```bash
-   apt install -y curl jq
+   apt install -y curl jq      # Debian/Ubuntu (Pi/VPS)
+   # macOS: curl is built-in — brew install jq
    ```
 
 ## Usage

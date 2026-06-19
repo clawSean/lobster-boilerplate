@@ -11,8 +11,8 @@ Render flowcharts, sequence diagrams, state machines, Gantt charts, and more fro
 
 2. **Install Chromium** (required by Puppeteer for rendering):
    ```bash
-   apt install -y chromium-browser
-   # or
+   apt install -y chromium-browser          # Debian/Ubuntu (Pi/VPS)
+   # or (cross-platform — macOS/Linux): let Puppeteer fetch its own Chromium
    npx puppeteer browsers install chrome
    ```
 

@@ -206,7 +206,7 @@ Example snippet:
       2222222222
     ],
     "groupPolicy": "allowlist",
-    "streamMode": "partial"
+    "streaming": { "mode": "partial" }
   }
 }
 ```

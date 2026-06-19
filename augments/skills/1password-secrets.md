@@ -6,9 +6,11 @@ Runtime credential access via 1Password CLI. All secrets are fetched at runtime 
 
 1. **Install 1Password CLI:**
    ```bash
+   # Debian/Ubuntu (VPS/Pi). On a Raspberry Pi / arm64 host, swap arch=amd64 → arch=arm64.
    curl -sS https://downloads.1password.com/linux/keys/1password.asc | gpg --dearmor -o /usr/share/keyrings/1password-archive-keyring.gpg
    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/amd64 stable main" | tee /etc/apt/sources.list.d/1password-cli.list
    apt update && apt install -y 1password-cli
+   # macOS: brew install 1password-cli
    ```
 
 2. **Create a service account** in your 1Password dashboard and get the token.
