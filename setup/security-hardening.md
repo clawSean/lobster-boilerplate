@@ -71,7 +71,7 @@ Any agent that can run shell, edit files, send messages, schedule jobs, call API
 
 ## 9. Backups / recovery before cleverness
 
-Back up config, workspace/memory, cron jobs, auth-profile metadata, systemd user services, and project repos. Keep secrets separate and intentionally handled. And treat OpenClaw upgrades as deliberate + reversible — snapshot config + workspace first, and keep your upgrade/rollback helpers in [`infra/`](infra/).
+Back up config, workspace/memory, cron jobs, auth-profile metadata, systemd user services, and project repos. Keep secrets separate and intentionally handled. And treat OpenClaw upgrades as deliberate + reversible — snapshot config + workspace first, and use the safe upgrade/rollback helpers in [`setup/infra/scripts/`](infra/scripts/) (see [safe-upgrade-rollback.md](safe-upgrade-rollback.md)).
 
 ## 10. A recurring audit
 

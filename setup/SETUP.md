@@ -297,4 +297,19 @@ Once the gateway is up: confirm it's actually live (`openclaw status`, DM your b
 
 ---
 
+## 9. Keep a safe upgrade path
+
+Before your first package upgrade or a planned gateway restart, read **[safe-upgrade-rollback.md](safe-upgrade-rollback.md)** and run the preflight helper:
+
+```bash
+chmod +x setup/infra/scripts/openclaw-*.sh
+setup/infra/scripts/openclaw-restart-preflight.sh
+```
+
+The bundled wrappers create permission-locked restart backups (config + auth profiles), run `openclaw config validate`, and keep rollback commands explicit. They're env-var configurable (`OPENCLAW_HOME`, `OPENCLAW_SERVICE`, `KNOWN_BAD_VERSIONS`, …) so they port across hosts. *(Contributed by [@nicknmorty](https://github.com/nicknmorty).)*
+
+> 🍎 **macOS:** the preflight's `systemctl` service check is auto-skipped (it warns, doesn't fail); the upgrade/rollback flow itself wraps `openclaw update`, which is cross-platform.
+
+---
+
 This repo is intentionally a *setup assistant*, not a framework — adjust the template + docs to taste and commit your own defaults.

@@ -45,7 +45,7 @@ openclaw status                        # gateway up? then DM your bot to confirm
 - **`setup/`** — the core path: `SETUP.md` (fresh host → running agent), `security-hardening.md` (lock down trust boundaries first), `workspace-layout.md` (what each workspace file does), `1password-runtime-secrets.md` (secret handling: `.env` vs 1Password runtime injection), `tailscale-setup.md` (secure remote networking), and `config/` + `infra/` (below).
 - **`setup/config/openclaw.template.json`** — minimal, opinionated OpenClaw config with placeholders for your tokens/keys.
 - **`setup/config/openclaw.full-example.json5`** — maximal JSON5 reference showing most documented keys with safe placeholders.
-- **`setup/infra/`** — systemd units + 1Password env-render scripts for running the gateway(s) as persistent services.
+- **`setup/infra/`** — systemd units, 1Password env-render scripts, and **safe upgrade / rollback + restart-backup helpers** ([safe-upgrade-rollback.md](setup/safe-upgrade-rollback.md)) for running and maintaining the gateway(s) as persistent services.
 - **`augments/`** — optional add-ons once the core path works: `multi-gateway/` (a second isolated gateway — the generic `second-gateway` base, a worked **Doctor / breakglass agent**, and a **Sandbox gateway** lockdown pattern), `skills/` (starter skill *guides*, each `.md` walks you through building the skill), `memory/` (a minimal 4-cron curation loop, plus optional local embeddings / qmd — see [`augments/memory/`](augments/memory/)), `browser-relay.md`, and `airbnb-mcp-setup.md`. For ready-made skills, see [SkillReef](#ecosystem--see-also).
 - **`troubleshooting/`** — `openclaw doctor`, verify-it-works checks, and the common-gotchas table.
 
